@@ -1,0 +1,20 @@
+{
+  "name": "elit1/mvc_from_scratch_practice",
+  "authors": [
+    {
+      "name": "Eli T",
+      "email": "elit1989@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\": "./"
+    }
+  },
+  "require": {
+    "ext-pdo": "*",
+    "vlucas/phpdotenv": "^5.3",
+    "eligithub/mvc-core": "^0.0.9"
+  },
+  "description": ""
+}
