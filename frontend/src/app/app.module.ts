@@ -7,11 +7,21 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularMaterialModule } from './angular-material.module';
 import { FlexLayoutModule } from "@angular/flex-layout";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ProductsListComponent } from './components/products-list/products-list.component';
+import { ProductComponent } from './components/products-list/product/product.component';
+import { CategoriesListComponent } from './components/categories-list/categories-list.component';
+import { CategoryComponent } from './components/categories-list/category/category.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DashboardComponent,
+    ProductsListComponent,
+    ProductComponent,
+    CategoriesListComponent,
+    CategoryComponent
   ],
   imports: [
     BrowserModule,
