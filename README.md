@@ -1,1 +1,1 @@
-# angular_shopping_cart_example
+# angular_shopping_cart_example# learning-excercise-shop
