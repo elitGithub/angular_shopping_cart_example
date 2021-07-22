@@ -19,6 +19,7 @@ class Router
 	 * @var array
 	 */
 	protected array $routes = [];
+	protected array $supportedMethods = ['get', 'post', 'put', 'delete'];
 
 	/**
 	 * Router constructor.
@@ -26,7 +27,7 @@ class Router
 	 * @param  Request  $request
 	 * @param  Response  $response
 	 */
-	public function __construct(public Request $request, public Response $response)
+	#[Pure] public function __construct(public Request $request, public Response $response)
 	{
 		$this->app = Application::getApp();
 	}
@@ -49,6 +50,24 @@ class Router
 		$this->routes['post'][$path] = $callback;
 	}
 
+    /**
+     * @param $path
+     * @param $callback
+     */
+	public function put($path, $callback)
+	{
+		$this->routes['post'][$path] = $callback;
+	}
+
+	/**
+     * @param $path
+     * @param $callback
+     */
+	public function delete($path, $callback)
+	{
+		$this->routes['post'][$path] = $callback;
+	}
+
 	/**
 	 * @return mixed
 	 * @throws NotFoundException
@@ -58,7 +77,6 @@ class Router
 		$path = $this->request->getPath();
 		$method = $this->request->method();
 		$callback = $this->routes[$method][$path] ?? false;
-
 		if (!$callback) {
 			throw new NotFoundException();
 		}
@@ -69,7 +87,7 @@ class Router
 		if (is_array($callback)) {
 			$callback[0] = new $callback[0]();
 			$this->app->setController($callback[0]);
-			$this->app->controller->action = $callback[1];
+			$this->app->controller->action = [$callback[1]];
 			foreach ($this->app->controller->getMiddlewares() as $middleware) {
 				$middleware->execute();
 			}
@@ -87,9 +105,13 @@ class Router
 	{
 		// user defined routes
 		if (!empty($routes)) {
-			foreach ($routes as $method => $route) {
-				$this->{$method}($route['path'], $route['callback']);
-			}
+            foreach ($this->supportedMethods as $method) {
+                if (isset($routes[$method])) {
+                    foreach ($routes[$method] as $path => $callback) {
+                        $this->{$method}($path, $callback);
+                    }
+                }
+            }
 		}
 	}
 }

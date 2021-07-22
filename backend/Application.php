@@ -3,6 +3,7 @@
 namespace App;
 
 use App\DB\Database;
+use App\Helpers\ResponseCodes;
 use Exception;
 
 /**
@@ -65,8 +66,12 @@ class Application
 		try {
 			echo $this->router->resolve();
 		} catch (Exception $e) {
-			$this->response->setStatusCode($e->getCode());
-			echo $this->view->renderView('_error', ['exception' => $e]);
+		    $code = $e->getCode();
+		    if (!is_numeric($code)) {
+		        $code = ResponseCodes::HTTP_SERVICE_UNAVAILABLE;
+            }
+			$this->response->setStatusCode($code);
+			$this->response->setMessage($e->getMessage())->sendResponse();
 		}
 	}
 

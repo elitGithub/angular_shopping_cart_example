@@ -23,7 +23,6 @@ class AuthMiddleware extends BaseMiddleware
 			if (empty($this->actions) || in_array(Application::$app?->getController()?->action, $this->actions)) {
 				throw new ForbiddenException();
 			}
-
 		}
 	}
 }

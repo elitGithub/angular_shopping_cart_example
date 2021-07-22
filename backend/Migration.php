@@ -5,6 +5,7 @@ namespace App;
 
 
 use App\DB\Database;
+use PDO;
 
 abstract class Migration
 {
@@ -18,4 +19,6 @@ abstract class Migration
 	abstract public function up();
 
 	abstract public function down();
+
+
 }

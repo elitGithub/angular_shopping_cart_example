@@ -13,8 +13,7 @@
   },
   "require": {
     "ext-pdo": "*",
-    "vlucas/phpdotenv": "^5.3",
-    "eligithub/mvc-core": "^0.0.9"
+    "vlucas/phpdotenv": "^5.3"
   },
   "description": ""
 }

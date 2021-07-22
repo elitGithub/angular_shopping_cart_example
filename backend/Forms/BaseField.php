@@ -5,8 +5,9 @@ namespace App\Forms;
 
 
 use App\Model;
+use Stringable;
 
-abstract class BaseField implements \Stringable
+abstract class BaseField implements Stringable
 {
 	abstract public function renderInput(): string;
 

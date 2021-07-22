@@ -3,11 +3,12 @@
 
 namespace App\Controllers;
 
-use eligithub\phpmvc\Application;
-use eligithub\phpmvc\Controller;
-use eligithub\phpmvc\Middlewares\AuthMiddleware;
-use eligithub\phpmvc\Request;
-use eligithub\phpmvc\Response;
+use App\Application;
+use App\Controller;
+use App\DB\DbModel;
+use App\Middlewares\AuthMiddleware;
+use App\Request;
+use App\Response;
 use App\Models\LoginForm;
 use App\Models\User;
 
@@ -17,11 +18,6 @@ use App\Models\User;
  */
 class AuthController extends Controller
 {
-
-	public function __construct()
-	{
-		$this->registerMiddleware(new AuthMiddleware(['profile']));
-	}
 
 	public function login(Request $request, Response $response): bool|array|string
 	{
@@ -74,5 +70,8 @@ class AuthController extends Controller
 	}
 
 
-
+    function getModel(): DbModel
+    {
+        // TODO: Implement getModel() method.
+    }
 }
