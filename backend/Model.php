@@ -6,7 +6,8 @@ namespace App;
 
 abstract class Model
 {
-
+    public const DELETED = 1;
+    public const NOT_DELETED = 0;
     public const RULE_REQUIRED = 'required';
     public const RULE_EMAIL = 'email';
     public const RULE_MIN = 'min';
@@ -16,12 +17,20 @@ abstract class Model
 
     public array $errors = [];
 
+    public function __get(string $name)
+    {
+        return $this->$name;
+    }
+
+    public function __set(string $name, $value): void
+    {
+        $this->$name = $value;
+    }
+
     public function loadData(array $data)
     {
         foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-            }
+            $this->{$key} = $value;
         }
     }
 

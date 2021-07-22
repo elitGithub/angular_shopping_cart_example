@@ -6,6 +6,7 @@ namespace App\DB;
 
 use App\Application;
 use App\Model;
+use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -18,15 +19,16 @@ abstract class DbModel extends Model
 
     abstract public function attributes(): array;
 
+    abstract public function fillable(): array;
+
     abstract public static function primaryKey(): string;
 
-    public array $relations = [];
 
     public function save(): bool
     {
         try {
             $tableName = static::tableName();
-            $attributes = $this->attributes();
+            $attributes = $this->fillable();
             $params = array_map(fn($attr) => ":$attr", $attributes);
             $statement = static::prepare("INSERT INTO $tableName (" . implode(',',
                     $attributes) . ") VALUES (" . implode(',', $params) . ");");
@@ -35,7 +37,7 @@ abstract class DbModel extends Model
             }
             $statement->execute();
             return true;
-        } catch (PDOException $e) {
+        } catch (Exception | PDOException $e) {
             if (method_exists($this, 'logErrors')) {
                 // TODO: add log!
                 $this->logErrors($e->getMessage(), $e->getTraceAsString());
@@ -46,7 +48,8 @@ abstract class DbModel extends Model
 
     protected function logErrors($message, $trace)
     {
-        file_put_contents(dirname(__FILE__) . '../runtime/errors_log.txt', ['message' => $message, 'trace' => $trace],
+        file_put_contents(Application::$ROOT_DIR . '/runtime/errors_log.txt',
+            ['message' => $message, 'trace' => $trace],
             FILE_APPEND);
     }
 
@@ -68,7 +71,7 @@ abstract class DbModel extends Model
         $tableAttributes = $instance->modelAttributes();
         $where = '';
         if (in_array('deleted', $tableAttributes)) {
-            $where .= ' WHERE deleted = 0';
+            $where .= ' WHERE deleted = ' . static::NOT_DELETED;
         }
 
         $stmt = static::prepare("SELECT * FROM $tableName $where LIMIT $offset, $limit");
@@ -81,7 +84,7 @@ abstract class DbModel extends Model
         $stmt = static::prepare("DESCRIBE {$this->tableName()}");
         $stmt->execute();
         $attributes = [];
-       foreach ($stmt->fetchAll() as $index => $row) {
+        foreach ($stmt->fetchAll() as $index => $row) {
             $attributes[] = $row['Field'];
         }
         return $attributes;
@@ -91,7 +94,7 @@ abstract class DbModel extends Model
     {
         $tableName = static::tableName();
         $attributes = array_keys($where);
-        $sqlWhere = implode("AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
+        $sqlWhere = implode(" AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
         $stmt = static::prepare("SELECT * FROM $tableName WHERE $sqlWhere");
         foreach ($where as $key => $value) {
             $stmt->bindValue(":$key", $value);

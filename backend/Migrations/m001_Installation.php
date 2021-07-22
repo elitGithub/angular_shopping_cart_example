@@ -4,15 +4,17 @@ namespace App\Migrations;
 
 use App\Migration;
 
-class Installation extends Migration {
+class m001_Installation extends Migration {
 
 	public const STATEMENTS = [
 		'users' => "CREATE TABLE IF NOT EXISTS users (
           id INT AUTO_INCREMENT PRIMARY KEY,
+          username VARCHAR(255) NOT NULL,
           email VARCHAR(255) NOT NULL,
           first_name VARCHAR(255) NOT NULL,
           last_name VARCHAR(255) NOT NULL,       
           status VARCHAR(255) NOT NULL DEFAULT 'active',
+          role_id INT(11) NOT NULL DEFAULT 0,
           deleted TINYINT NOT NULL DEFAULT 0,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=INNODB",
 		'products' => "CREATE TABLE IF NOT EXISTS products (
@@ -49,6 +51,11 @@ class Installation extends Migration {
           product_id INT(11) NOT NULL,
           quantity INT(11) NOT NULL DEFAULT 1,
           order_id INT(11) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=INNODB",
+        'roles' => "CREATE TABLE IF NOT EXISTS roles (
+          id INT(11) PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          deleted TINYINT NOT NULL DEFAULT 0,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=INNODB",
 	];
 

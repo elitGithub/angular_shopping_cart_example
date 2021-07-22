@@ -28,4 +28,9 @@ class Category extends DbModel
     {
         return [];
     }
+
+    public function fillable(): array
+    {
+        return ['title'];
+    }
 }

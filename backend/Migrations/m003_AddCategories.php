@@ -6,7 +6,7 @@ namespace App\Migrations;
 
 use App\Migration;
 
-class Categories extends Migration
+class m003_AddCategories extends Migration
 {
     public array $categories = [
         'Fruits',

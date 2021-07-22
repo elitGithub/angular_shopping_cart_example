@@ -10,6 +10,7 @@ class Product extends DbModel
 {
     private static array $categories = [];
 
+    // TODO: offset needs to accept pagination!
     public static function findAll($offset = 0): array
     {
         $list = parent::findAll($offset);
@@ -36,11 +37,16 @@ class Product extends DbModel
 
     public function attributes(): array
     {
-        return ['id', 'name', 'description', 'price', 'category', 'in_stock'];
+        return ['id', 'name', 'description', 'price', 'category_id', 'in_stock', 'created_at'];
     }
 
     public static function primaryKey(): string
     {
         return 'id';
+    }
+
+    public function fillable(): array
+    {
+        return ['name', 'description', 'price', 'category_id', 'in_stock'];
     }
 }

@@ -2,7 +2,7 @@
 .idea
 /vendor/*
 /config/app.php
-
+/runtime/*
 /tmp/cache/models/*
 !/tmp/cache/models/empty
 /tmp/cache/persistent/*

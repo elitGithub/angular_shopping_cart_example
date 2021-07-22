@@ -5,6 +5,7 @@ namespace App\DB;
 
 
 use App\Application;
+use Exception;
 use PDO;
 use PDOStatement;
 
@@ -51,9 +52,15 @@ class Database
             $instance = new $className();
 
             $this->consoleOutput("Migrating $migration");
-            $instance->up();
-            $this->consoleOutput("Migrated $migration");
-            $newMigrations[] = $migration;
+            try {
+                $instance->up();
+                $this->consoleOutput("Migrated $migration");
+                $newMigrations[] = $migration;
+            } catch (Exception $e) {
+                $this->consoleOutput($e->getMessage());
+                continue;
+            }
+
         }
 
         if (!empty($newMigrations)) {
