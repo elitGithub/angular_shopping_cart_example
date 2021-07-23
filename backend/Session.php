@@ -27,6 +27,12 @@ class Session
 		];
 	}
 
+	public function setArray(array $userValues) {
+	    foreach ($userValues as $key => $value) {
+	        $this->set($key, $value);
+        }
+    }
+
 	public function set($key, $value)
 	{
 		$_SESSION[$key] = $value;

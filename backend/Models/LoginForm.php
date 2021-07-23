@@ -5,44 +5,75 @@ namespace App\Models;
 
 
 use App\Application;
+use App\Interfaces\Guard;
 use App\Model;
 
-class LoginForm extends Model
+class LoginForm extends Model implements Guard
 {
 
-	public string $email = '';
-	public string $password = '';
+    public string $username = '';
+    public string $password = '';
 
-	public function rules(): array
-	{
-		return [
-			'email'    => [static::RULE_REQUIRED, static::RULE_EMAIL],
-			'password' => [static::RULE_REQUIRED],
-		];
-	}
+    public function rules(): array
+    {
+        return [
+            'username' => [static::RULE_REQUIRED],
+            'password' => [static::RULE_REQUIRED],
+        ];
+    }
 
-	public function login()
-	{
-		$user = User::findOne(['email' => $this->email]);
-		if (!$user) {
-			$this->addError('email', 'User with this email address does not exist.');
-			return false;
-		}
+    public function loadData(array $data)
+    {
+        $this->removeUnexpectedFields($data);
+        foreach ($data as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
 
-		if (password_verify($this->password, $user->password)) {
-			$this->addError('password', 'Password is in correct');
-			return false;
-		}
+    public function login()
+    {
+        /**
+         * @var User
+         */
+        $user = User::findOne(['username' => $this->username]);
+        if (!$user) {
+            $this->addError('username', 'User with this username address does not exist.');
+            return false;
+        }
 
-		return Application::$app->login($user);
-	}
+        if (password_verify($this->password, $user->password)) {
+            $this->addError('password', 'Password is in correct');
+            return false;
+        }
 
-	public function labels(): array
-	{
-		return [
-			'email'    => 'Your Email',
-			'password' => 'Password',
-		];
-	}
+        $user->token = $user->generateJwt($user->{$user->primaryKey()});
 
+        return Application::$app->login($user);
+    }
+
+    public function labels(): array
+    {
+        return [
+            'username' => 'Username',
+            'password' => 'Password',
+        ];
+    }
+
+    public function expectedFields(): array
+    {
+        return [
+            'username',
+            'password',
+        ];
+    }
+
+    public function removeUnexpectedFields(&$input): void
+    {
+        $inputFields = array_keys($input);
+        foreach ($inputFields as $inputKey) {
+            if (!in_array($inputKey, $this->expectedFields())) {
+                unset($input[$inputKey]);
+            }
+        }
+    }
 }

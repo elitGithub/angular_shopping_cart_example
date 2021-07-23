@@ -7,6 +7,7 @@ use App\Exceptions\NotFoundException;
 use App\Exceptions\UserNotFoundException;
 use App\UserModel;
 use PDO;
+use ReallySimpleJWT\Token;
 
 /**
  * Class RegisterModel
@@ -37,7 +38,7 @@ class User extends UserModel
     {
         // TODO: REGEX the hell out of the username.
         return [
-            'username'       => [
+            'username'         => [
                 static::RULE_REQUIRED,
                 [static::RULE_UNIQUE, 'class' => static::class],
             ],
@@ -55,6 +56,19 @@ class User extends UserModel
             ],
             'confirm_password' => [static::RULE_REQUIRED, [static::RULE_MATCH, static::RULE_MATCH => 'password']],
         ];
+    }
+
+    public static function getToken()
+    {
+        return $_SESSION['token'];
+    }
+
+    public function generateJwt($userId)
+    {
+        $expiration = time() + 3600;
+        $issuer = 'localhost';
+
+        return Token::create($userId, $_ENV['SECRET_KEY'], $expiration, $issuer);
     }
 
     public function delete($id)

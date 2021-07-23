@@ -4,6 +4,7 @@
 namespace App\Helpers;
 
 
+use App\Controllers\AuthController;
 use App\Controllers\CategoryController;
 use App\Controllers\ProductsController;
 use App\Controllers\SiteController;
@@ -18,7 +19,9 @@ class AppRoutes
                 'products'   => [ProductsController::class, 'index'],
                 'categories' => [CategoryController::class, 'index'],
             ],
-            'post'   => [],
+            'post'   => [
+                'login' => [AuthController::class, 'login'],
+            ],
             'put'    => [],
             'delete' => [],
         ];

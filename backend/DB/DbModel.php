@@ -101,6 +101,6 @@ abstract class DbModel extends Model
         }
 
         $stmt->execute();
-        return $stmt->fetchObject(static::class);
+        return $stmt->fetchObject(static::class) ?? null;
     }
 }

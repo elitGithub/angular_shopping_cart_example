@@ -19,55 +19,56 @@ use App\Models\User;
 class AuthController extends Controller
 {
 
-	public function login(Request $request, Response $response): bool|array|string
-	{
-		$loginForm = new LoginForm();
-		if ($request->isPost()) {
-			$loginForm->loadData($request->getBody());
-			if ($loginForm->validate() && $loginForm->login()) {
-				$response->redirect('/');
-				return true;
-			}
-		}
-		$this->setLayout('auth');
-		return $this->render('login', [
-			'model' => $loginForm,
-		]);
-	}
+    public function login(Request $request, Response $response)
+    {
+        $loginForm = new LoginForm();
+        if ($request->isPost()) {
+            $loginForm->loadData($request->getBody());
+            if ($loginForm->validate() && $loginForm->login()) {
+                // TODO: login success should return some data so the front knows how to handle token etc.
+                $response->setSuccess(true)
+                         ->setData(['token' => User::getToken()])
+                         ->sendResponse();
+            }
+        }
 
-	/**
-	 * @param  Request  $request
-	 *
-	 * @return bool|array|string
-	 */
-	public function register(Request $request): bool|array|string
-	{
-		$this->setLayout('auth');
-		$user = new User();
-		if ($request->isPost()) {
-			$user->loadData($request->getBody());
-			if ($user->validate() && $user->save()) {
-				Application::$app->session->setFlash('success', 'Thanks for registering');
-				Application::$app->response->redirect('/');
-			}
-			return $this->render('register', [
-				'model' => $user,
-			]);
-		}
-		return $this->render('register', [
-			'model' => $user,
-		]);
-	}
+        $this->json(false, 'Request must be post', []);
+    }
 
-	public function logout(Request $request, Response $response) {
-		Application::$app->logout();
-		$response->redirect('/');
-	}
+    /**
+     * @param  Request  $request
+     *
+     * @return bool|array|string
+     */
+    public function register(Request $request): bool|array|string
+    {
+        $this->setLayout('auth');
+        $user = new User();
+        if ($request->isPost()) {
+            $user->loadData($request->getBody());
+            if ($user->validate() && $user->save()) {
+                Application::$app->session->setFlash('success', 'Thanks for registering');
+                Application::$app->response->redirect('/');
+            }
+            return $this->render('register', [
+                'model' => $user,
+            ]);
+        }
+        return $this->render('register', [
+            'model' => $user,
+        ]);
+    }
 
-	public function profile(): bool|array|string
-	{
-		return $this->render('profile');
-	}
+    public function logout(Request $request, Response $response)
+    {
+        Application::$app->logout();
+        $response->redirect('/');
+    }
+
+    public function profile(): bool|array|string
+    {
+        return $this->render('profile');
+    }
 
 
     function getModel(): DbModel
