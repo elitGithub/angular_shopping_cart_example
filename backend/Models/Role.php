@@ -19,6 +19,7 @@ class Role extends DbModel
     public function attributes(): array
     {
         return [
+            'id',
             'name',
             'deleted',
         ];
@@ -41,7 +42,11 @@ class Role extends DbModel
     public function rules(): array
     {
         return [
-            'name' => [
+            'name'    => [
+                static::RULE_REQUIRED,
+                [static::RULE_UNIQUE, 'class' => static::class],
+            ],
+            'id' => [
                 static::RULE_REQUIRED,
                 [static::RULE_UNIQUE, 'class' => static::class],
             ],
@@ -51,8 +56,9 @@ class Role extends DbModel
     public function fillable(): array
     {
         return [
+            'id',
             'name',
-
+            'deleted',
         ];
     }
 }

@@ -48,7 +48,7 @@ abstract class DbModel extends Model
 
     protected function logErrors($message, $trace)
     {
-        file_put_contents(Application::$ROOT_DIR . '/runtime/errors_log.txt',
+        file_put_contents(Application::$ROOT_DIR . '/runtime/' . date('Y-m-d') . '_errors_log.txt',
             ['message' => $message, 'trace' => $trace],
             FILE_APPEND);
     }

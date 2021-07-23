@@ -83,7 +83,7 @@ class User extends UserModel
     {
         // TODO: read the table schema and get the column names from there, then get the columns as attributes
         // This should create a model of the table - just like an ORM
-        return ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'deleted'];
+        return ['id', 'username', 'first_name', 'last_name', 'email', 'password', 'status', 'role_id', 'deleted'];
     }
 
     public function labels(): array
@@ -129,6 +129,6 @@ class User extends UserModel
 
     public function fillable(): array
     {
-        return ['username', 'first_name', 'last_name', 'email', 'password', 'status', 'role', 'deleted'];
+        return ['username', 'first_name', 'last_name', 'email', 'password', 'status', 'role_id', 'deleted'];
     }
 }

@@ -12,24 +12,26 @@ class m002_AddInitialUsers extends Migration
     // return ['first_name', 'last_name', 'email', 'password', 'status', 'deleted'];
     public const USERS_TO_ADD = [
         [
-            'username'   => 'admin',
-            'first_name' => 'Shop',
-            'last_name'  => 'Admin',
-            'email'      => 'admin@shop.com',
-            'password'   => 'nncRdXQyfDC3Pg74ZEXL6TCU',
-            'status'     => User::STATUS_ACTIVE,
-            'deleted'    => User::NOT_DELETED,
-            'role_id'    => 1,
+            'username'         => 'admin',
+            'first_name'       => 'Shop',
+            'last_name'        => 'Admin',
+            'email'            => 'admin@shop.com',
+            'password'         => 'nncRdXQyfDC3Pg74ZEXL6TCU',
+            'confirm_password' => 'nncRdXQyfDC3Pg74ZEXL6TCU',
+            'status'           => User::STATUS_ACTIVE,
+            'deleted'          => User::NOT_DELETED,
+            'role_id'          => 'R1',
         ],
         [
-            'username'   => 'manager',
-            'first_name' => 'Shop',
-            'last_name'  => 'Manager',
-            'email'      => 'manager@shop.com',
-            'password'   => 'nncRdXQyfDC3Pg74ZEXL6TCU',
-            'status'     => User::STATUS_ACTIVE,
-            'deleted'    => User::NOT_DELETED,
-            'role_id'    => 2,
+            'username'         => 'manager',
+            'first_name'       => 'Shop',
+            'last_name'        => 'Manager',
+            'email'            => 'manager@shop.com',
+            'password'         => 'nncRdXQyfDC3Pg74ZEXL6TCU',
+            'confirm_password' => 'nncRdXQyfDC3Pg74ZEXL6TCU',
+            'status'           => User::STATUS_ACTIVE,
+            'deleted'          => User::NOT_DELETED,
+            'role_id'          => 'R2',
         ],
     ];
 
@@ -41,7 +43,8 @@ class m002_AddInitialUsers extends Migration
             if ($user->validate() && $user->save()) {
                 echo "User " . $user->username . " created successfully" . PHP_EOL;
             } else {
-                echo "User " . $user->username . " WAS NOT CREATED" .  PHP_EOL;
+                print_r($user->errors);
+                echo "User " . $user->username . " WAS NOT CREATED" . PHP_EOL;
             }
         }
     }
