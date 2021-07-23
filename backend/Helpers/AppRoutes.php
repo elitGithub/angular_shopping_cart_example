@@ -14,16 +14,19 @@ class AppRoutes
     public static function routes(): array
     {
         return [
-            'get'    => [
+            'options' => [
+                [SiteController::class, 'options'],
+            ],
+            'get'     => [
                 '/'          => [SiteController::class, 'home'],
                 'products'   => [ProductsController::class, 'index'],
                 'categories' => [CategoryController::class, 'index'],
             ],
-            'post'   => [
+            'post'    => [
                 'login' => [AuthController::class, 'login'],
             ],
-            'put'    => [],
-            'delete' => [],
+            'put'     => [],
+            'delete'  => [],
         ];
     }
 }

@@ -10,19 +10,23 @@ use App\Exceptions\ForbiddenException;
 class AuthMiddleware extends BaseMiddleware
 {
 
-	public function __construct(public array $actions = [])
-	{
-	}
+    private array $secureActions;
 
-	/**
-	 * @throws ForbiddenException
-	 */
-	public function execute()
-	{
-		if (Application::isGuest()) {
-			if (empty($this->actions) || in_array(Application::$app?->getController()?->action, $this->actions)) {
-				throw new ForbiddenException();
-			}
-		}
-	}
+    public function __construct(public array $actions = [])
+    {
+        $this->secureActions = array_diff(Application::$app?->getController()?->allowedNotSecureActions(),
+            $this->actions);
+    }
+
+    /**
+     * @throws ForbiddenException
+     */
+    public function execute()
+    {
+        if (Application::isGuest()) {
+            if (!empty($this->secureActions)) {
+                throw new ForbiddenException();
+            }
+        }
+    }
 }

@@ -129,6 +129,17 @@ abstract class Model
         return call_user_func_array([get_called_class(), $name], $arguments);
     }
 
+    public function getErrorsAsString(): string
+    {
+        $errorMessage = '';
+        if (!empty($this->errors)) {
+            foreach ($this->errors as $attribute => $error) {
+                $errorMessage .= "$attribute has the following error: $error[0]";
+            }
+        }
+        return $errorMessage;
+    }
+
     /**
      * @return string[]
      */

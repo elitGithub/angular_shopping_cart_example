@@ -14,6 +14,9 @@ class URL
 
     public function segment(string $url)
     {
+        if ($url === '/') {
+            return $url;
+        }
         $segments = explode('/', $url);
         $requestedRoute = end($segments);
         $hasQueryParams = strpos($requestedRoute, '?');
@@ -28,7 +31,7 @@ class URL
         return $requestedRoute;
     }
 
-    private function removeFileExtensions(string $path)
+    private function removeFileExtensions(string $path): bool|string
     {
         $elements = explode('.', $path);
         if (end($elements)) {

@@ -29,6 +29,10 @@ class AuthController extends Controller
                 $response->setSuccess(true)
                          ->setData(['token' => User::getToken()])
                          ->sendResponse();
+            } else {
+                $response->setSuccess(false)
+                         ->setMessage($loginForm->getErrorsAsString())
+                         ->sendResponse();
             }
         }
 
@@ -74,5 +78,17 @@ class AuthController extends Controller
     function getModel(): DbModel
     {
         // TODO: Implement getModel() method.
+    }
+
+    public function allowedNotSecureActions(): array
+    {
+        return ['login'];
+    }
+
+    public function usedMiddlewares(): array
+    {
+        return [
+            AuthMiddleware::class
+        ];
     }
 }
