@@ -1,8 +1,8 @@
 <?php
 
-
 namespace App\Models;
 
+use App\Application;
 use App\Exceptions\UserNotFoundException;
 use App\UserModel;
 use Exception;
@@ -10,8 +10,8 @@ use PDO;
 use ReallySimpleJWT\Token;
 
 /**
- * Class RegisterModel
- * @package App\models
+ * Class User
+ * @package App\Models
  */
 class User extends UserModel
 {
@@ -150,5 +150,16 @@ class User extends UserModel
     public function fillable(): array
     {
         return ['username', 'first_name', 'last_name', 'email', 'password', 'status', 'role_id', 'deleted'];
+    }
+
+    public function info(): array
+    {
+        return [
+            'username'     => $this->username,
+            'display_name' => $this->getDisplayName(),
+            'role'         => $this->getRole(),
+            'user_image'   => $this->user_image ?? Application::$ROOT_DIR . '/public_assets/placeholder.png',
+            'description'  => $this->description ?? '',
+        ];
     }
 }

@@ -13,6 +13,7 @@ class LoginForm extends Model implements Guard
 
     public string $username = '';
     public string $password = '';
+    public ?User $user;
 
     public function rules(): array
     {
@@ -32,23 +33,20 @@ class LoginForm extends Model implements Guard
 
     public function login()
     {
-        /**
-         * @var User
-         */
-        $user = User::findOne(['username' => $this->username]);
-        if (!$user) {
+        $this->user = User::findOne(['username' => $this->username]);
+        if (!$this->user) {
             $this->addError('username', 'User with this username does not exist.');
             return false;
         }
 
-        if (!password_verify($this->password, $user->password)) {
+        if (!password_verify($this->password, $this->user->password)) {
             $this->addError('password', 'Password is incorrect');
             return false;
         }
 
-        $user->token = User::generateJwt($user->{$user->primaryKey()});
+        $this->user->token = User::generateJwt($this->user->{$this->user->primaryKey()});
 
-        return Application::$app->login($user);
+        return Application::$app->login($this->user);
     }
 
     public function labels(): array

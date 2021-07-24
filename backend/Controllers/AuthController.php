@@ -21,7 +21,8 @@ use App\Models\User;
 class AuthController extends Controller
 {
 
-    public function getLoginForm(Request $request, Response $response) {
+    public function getLoginForm(Request $request, Response $response)
+    {
         $formName = Form::hasForm($request->getPath());
         if ($formName) {
             $response
@@ -44,7 +45,10 @@ class AuthController extends Controller
             if ($loginForm->validate() && $loginForm->login()) {
                 // TODO: login success should return some data so the front knows how to handle token etc.
                 $response->setSuccess(true)
-                         ->setData(['token' => User::getToken()])
+                         ->setData([
+                             'token'    => User::getToken(),
+                             'userData' => $loginForm->user->info(),
+                         ])
                          ->sendResponse();
             } else {
                 $response->setSuccess(false)
@@ -103,7 +107,7 @@ class AuthController extends Controller
     public function usedMiddlewares(): array
     {
         return [
-            AuthMiddleware::class
+            AuthMiddleware::class,
         ];
     }
 }
