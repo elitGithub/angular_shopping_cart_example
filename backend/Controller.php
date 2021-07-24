@@ -5,7 +5,6 @@ namespace App;
 
 use App\DB\DbModel;
 use App\Interfaces\Auth;
-use App\Middlewares\AuthMiddleware;
 use App\Middlewares\BaseMiddleware;
 
 /**
@@ -34,7 +33,6 @@ abstract class Controller implements Auth
     public function __set(string $name, $value): void
     {
         if ($name === 'action') {
-            $action = '';
             $action = $value;
             foreach ($this->usedMiddlewares() as $middleware) {
                 $this->registerMiddleware(new $middleware([$action]));
@@ -42,6 +40,11 @@ abstract class Controller implements Auth
         } else {
             $this->$name = $value;
         }
+    }
+
+    public function __get(string $name)
+    {
+        return $this->$name;
     }
 
     abstract function getModel(): DbModel;

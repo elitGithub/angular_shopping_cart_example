@@ -21,6 +21,7 @@ class AppRoutes
                 '/'          => [SiteController::class, 'home'],
                 'products'   => [ProductsController::class, 'index'],
                 'categories' => [CategoryController::class, 'index'],
+                'login'      => [AuthController::class, 'getLoginForm'],
             ],
             'post'    => [
                 'login' => [AuthController::class, 'login'],

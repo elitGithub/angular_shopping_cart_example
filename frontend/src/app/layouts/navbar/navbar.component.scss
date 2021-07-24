@@ -18,11 +18,14 @@ mat-sidenav {
   height: calc(100vh - 98px);
   border-radius: 10px;
   margin: 16px 16px 16px 32px;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   font-size: 2rem;
   color: lightgray;
+
 }
 
 mat-sidenav-container {
@@ -35,9 +38,10 @@ mat-sidenav-container {
   align-items: center;
   justify-content: flex-start;
   font-size: 1rem;
-}
-.menu-button mat-icon {
-  margin-right: 8px;
+
+  mat-icon {
+    margin-right: 8px;
+  }
 }
 
 .avatar {
@@ -63,5 +67,3 @@ mat-divider {
   margin-bottom: 16px;
   background-color: rgba(255, 255, 255, 0.5);
 }
-
-/*# sourceMappingURL=navbar.component.css.map */

@@ -37,16 +37,16 @@ class LoginForm extends Model implements Guard
          */
         $user = User::findOne(['username' => $this->username]);
         if (!$user) {
-            $this->addError('username', 'User with this username address does not exist.');
+            $this->addError('username', 'User with this username does not exist.');
             return false;
         }
 
-        if (password_verify($this->password, $user->password)) {
-            $this->addError('password', 'Password is in correct');
+        if (!password_verify($this->password, $user->password)) {
+            $this->addError('password', 'Password is incorrect');
             return false;
         }
 
-        $user->token = $user->generateJwt($user->{$user->primaryKey()});
+        $user->token = User::generateJwt($user->{$user->primaryKey()});
 
         return Application::$app->login($user);
     }

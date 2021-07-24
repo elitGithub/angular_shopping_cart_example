@@ -12,7 +12,8 @@
 
 # profiling files
 chrome-profiler-events*.json
-
+src/environments/environment.prod.ts
+src/environments/environment.ts
 # IDEs and editors
 /.idea
 .project

@@ -21,6 +21,10 @@ import { LoginComponent } from './components/login/login.component';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { ReactiveFormsModule } from "@angular/forms";
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import { ProductsComponent } from './components/products/products.component';
+import { CategoriesComponent } from './components/categories/categories.component';
+import { UsersComponent } from './components/users/users.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +32,11 @@ import { ReactiveFormsModule } from "@angular/forms";
     NavbarComponent,
     DashboardComponent,
     NotFoundComponent,
-    LoginComponent
+    LoginComponent,
+    SpinnerComponent,
+    ProductsComponent,
+    CategoriesComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,

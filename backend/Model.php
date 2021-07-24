@@ -134,7 +134,7 @@ abstract class Model
         $errorMessage = '';
         if (!empty($this->errors)) {
             foreach ($this->errors as $attribute => $error) {
-                $errorMessage .= "$attribute has the following error: $error[0]";
+                $errorMessage .= "{$this->getLabel($attribute)}: $error[0]";
             }
         }
         return $errorMessage;

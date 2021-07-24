@@ -1,36 +1,58 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
-import { tap } from "rxjs/operators";
+import { ApiResponse } from "../interfaces/api-response";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  // TODO: move this to config
   readonly LOGIN_URL = 'http://myshop.eli/login';
   public isAuthenticated = new BehaviorSubject<boolean>(false);
+  public token = '';
 
   constructor(private http: HttpClient) {
-    const token = this.hasAuthToken();
+    this.token = this.hasAuthToken();
+  }
+
+  createApiResponse(response: any): ApiResponse {
+    const apiResponse: ApiResponse = { success: false, message: '', data: [{}] };
+    if (!response.hasOwnProperty('success')) {
+      throw new Error('broken response');
+    }
+
+    apiResponse.success = response.success;
+
+
+    if (response.hasOwnProperty('data')) {
+      apiResponse.data = response.data;
+    }
+
+    if (response.hasOwnProperty('message')) {
+      apiResponse.message = response.message;
+    }
+
+    return apiResponse;
+
+  }
+
+  getLoginForm() {
+    return this.http.get(this.LOGIN_URL).toPromise().then(res => this.createApiResponse(res));
   }
 
   login(username: string, password: string) {
-    return this.http.post(this.LOGIN_URL, { username, password }).pipe(
-      tap((response: any) => {
-        if (response.success) {
-          this.isAuthenticated.next(true);
-          localStorage.setItem('auth_token', response.token);
-        } else {
-          throw new Error(response.message);
-        }
-      })
-    );
+    return this.http.post(this.LOGIN_URL, { username, password }).toPromise().then(res => this.createApiResponse(res));
   }
 
   hasAuthToken() {
-    return localStorage.getItem('auth_token');
+    return localStorage.getItem('auth_token') ?? '';
   }
 
 
+  setToken(token) {
+    this.token = token;
+    localStorage.setItem('auth_token', token);
+  }
 }

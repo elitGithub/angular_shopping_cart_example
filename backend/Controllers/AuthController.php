@@ -6,6 +6,8 @@ namespace App\Controllers;
 use App\Application;
 use App\Controller;
 use App\DB\DbModel;
+use App\Forms\AuthForm;
+use App\Forms\Form;
 use App\Middlewares\AuthMiddleware;
 use App\Request;
 use App\Response;
@@ -18,6 +20,21 @@ use App\Models\User;
  */
 class AuthController extends Controller
 {
+
+    public function getLoginForm(Request $request, Response $response) {
+        $formName = Form::hasForm($request->getPath());
+        if ($formName) {
+            $response
+                ->setSuccess(true)
+                ->setData(['fields' => AuthForm::formFields()])
+                ->sendResponse();
+        }
+
+        $response
+            ->setSuccess(false)
+            ->setMessage('Data not found')
+            ->sendResponse();
+    }
 
     public function login(Request $request, Response $response)
     {
@@ -35,8 +52,6 @@ class AuthController extends Controller
                          ->sendResponse();
             }
         }
-
-        $this->json(false, 'Request must be post', []);
     }
 
     /**
@@ -82,7 +97,7 @@ class AuthController extends Controller
 
     public function allowedNotSecureActions(): array
     {
-        return ['login'];
+        return ['login', 'getLoginForm'];
     }
 
     public function usedMiddlewares(): array

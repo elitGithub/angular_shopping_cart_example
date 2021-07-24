@@ -109,9 +109,14 @@ class Application
 
     public function login(UserModel $user): bool
     {
+        if (!$user->token) {
+            $this->logout();
+            return false;
+        }
         $this->user = $user;
         $userId = $user->{$user->primaryKey()};
         $userData = [
+            'user'     => $userId . '#' . $user->username,
             'userid'   => $userId,
             'username' => $user->username,
             'token'    => $user->token,

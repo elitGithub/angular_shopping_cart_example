@@ -3,9 +3,9 @@
 
 namespace App\Models;
 
-use App\Exceptions\NotFoundException;
 use App\Exceptions\UserNotFoundException;
 use App\UserModel;
+use Exception;
 use PDO;
 use ReallySimpleJWT\Token;
 
@@ -63,12 +63,18 @@ class User extends UserModel
         return $_SESSION['token'];
     }
 
-    public function generateJwt($userId)
+    public static function generateJwt($userId): bool|string
     {
-        $expiration = time() + 3600;
-        $issuer = 'localhost';
+        try {
+            $expiration = time() + 3600;
+            $issuer = 'localhost';
 
-        return Token::create($userId, $_ENV['SECRET_KEY'], $expiration, $issuer);
+            return Token::create($userId, $_ENV['SECRET_KEY'], $expiration, $issuer);
+        } catch (Exception $e) {
+            echo $e->getCode() . PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
+            return false;
+        }
     }
 
     public function delete($id)

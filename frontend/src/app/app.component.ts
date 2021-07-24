@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from "./services/auth.service";
+import { BehaviorSubject } from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,8 @@ import { AuthService } from "./services/auth.service";
 export class AppComponent {
   title = 'Shop here';
   constructor(public authService: AuthService) {
+    if (this.authService.hasAuthToken()) {
+      this.authService.isAuthenticated = new BehaviorSubject<boolean>(true);
+    }
   }
 }
