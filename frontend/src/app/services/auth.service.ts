@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 import { ApiResponse } from "../interfaces/api-response";
 import { ConfigService } from "./config.service";
 import { User } from "../interfaces/user";
+import { CookieService } from "ngx-cookie-service";
 // TODO:
 // stage 1 check if has token
 // stage 2 verify if token is valid
@@ -15,16 +16,19 @@ import { User } from "../interfaces/user";
 export class AuthService {
 
   public isAuthenticated = new BehaviorSubject<boolean>(false);
+  public appPath = '';
   public token = '';
   private loginUrl = '';
   private isAuthUrl = '';
+  private isLoggedInUrl = '';
   public user: User;
 
-  constructor(private http: HttpClient, private configService: ConfigService) {
+  constructor(private http: HttpClient, private configService: ConfigService, private cookieService: CookieService) {
     this.token = this.hasAuthToken();
-    const appPath = this.configService.getApiUrl();
-    this.loginUrl = `${ appPath }login`;
-    this.isAuthUrl = `${ appPath }login`;
+    this.appPath = this.configService.getApiUrl();
+    this.loginUrl = `${ this.appPath }login`;
+    this.isAuthUrl = `${ this.appPath }login`;
+    this.isLoggedInUrl = `${ this.appPath }isLoggedIn`;
 
   }
 
@@ -62,17 +66,19 @@ export class AuthService {
   }
 
   getUserData() {
-    return this.http.get(this.loginUrl).toPromise().then(res => this.createApiResponse(res));
+    const headers: HttpHeaders = new HttpHeaders()
+      .set('Authorization', `Bearer ${ this.cookieService.get('auth-token') }`);
+    return this.http.get(`${ this.appPath }/getUserData`, { 'headers': headers }).toPromise().then(res => this.createApiResponse(res));
   }
 
   hasAuthToken() {
-    return localStorage.getItem('auth_token') ?? '';
+    return this.cookieService.get('auth_token');
   }
 
 
   setToken(token) {
     this.token = token;
-    localStorage.setItem('auth_token', token);
+    this.cookieService.set('auth_token', token);
   }
 
   getUser() {

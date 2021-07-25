@@ -7,6 +7,7 @@ namespace App;
 class Session
 {
 	protected const FLASH_KEY = 'flash_messages';
+	protected const TOKEN_KEY = 'token';
 
 	public function __construct()
 	{
@@ -18,6 +19,7 @@ class Session
 			$flashMessage['remove'] = true;
 		}
 
+        $_SESSION[static::TOKEN_KEY] = '';
 		$_SESSION[static::FLASH_KEY] = $flashMessages;
 	}
 

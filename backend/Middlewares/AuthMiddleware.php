@@ -6,6 +6,7 @@ namespace App\Middlewares;
 
 use App\Application;
 use App\Exceptions\ForbiddenException;
+use App\Helpers\JWTHelper;
 use App\Request;
 
 class AuthMiddleware extends BaseMiddleware

@@ -21,6 +21,12 @@ use App\Session;
 class AuthController extends Controller
 {
 
+    public function getUserData() {
+        var_dump($_COOKIE);
+        var_dump($_REQUEST);
+        var_dump($_SERVER);
+    }
+
     public function isLoggedIn(Request $request, Response $response)
     {
         // TODO: validate this part
