@@ -16,12 +16,16 @@ export class AuthService {
 
   public isAuthenticated = new BehaviorSubject<boolean>(false);
   public token = '';
-  private LOGIN_URL = '';
+  private loginUrl = '';
+  private isAuthUrl = '';
   public user: User;
 
   constructor(private http: HttpClient, private configService: ConfigService) {
     this.token = this.hasAuthToken();
-    this.LOGIN_URL = this.configService.getApiUrl();
+    const appPath = this.configService.getApiUrl();
+    this.loginUrl = `${ appPath }login`;
+    this.isAuthUrl = `${ appPath }login`;
+
   }
 
   createApiResponse(response: any): ApiResponse {
@@ -45,8 +49,8 @@ export class AuthService {
 
   }
 
-  getLoginForm() {
-    return this.http.get(this.LOGIN_URL).toPromise().then(res => this.createApiResponse(res));
+  isLoggedIn() {
+    return this.http.post(this.isAuthUrl, { token: this.token }).toPromise().then(res => this.createApiResponse(res));
   }
 
   setUser(data) {
@@ -54,7 +58,11 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
-    return this.http.post(this.LOGIN_URL, { username, password }).toPromise().then(res => this.createApiResponse(res));
+    return this.http.post(this.loginUrl, { username, password }).toPromise().then(res => this.createApiResponse(res));
+  }
+
+  getUserData() {
+    return this.http.get(this.loginUrl).toPromise().then(res => this.createApiResponse(res));
   }
 
   hasAuthToken() {
@@ -68,6 +76,9 @@ export class AuthService {
   }
 
   getUser() {
-    return this.user;
+    if (this.user) {
+      return this.user;
+    }
+    return null;
   }
 }

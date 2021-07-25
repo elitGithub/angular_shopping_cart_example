@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiPath: 'http://myshop.eli/login',
+  apiPath: 'http://myshop.eli/',
 };

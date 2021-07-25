@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiPath: 'http://myshop.eli/login',
+  apiPath: 'http://myshop.eli/',
 };
 
 /*

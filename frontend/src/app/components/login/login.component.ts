@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService
-      .getLoginForm()
+      .isLoggedIn()
       .then(response => {
         if (!checkResponse(response)) {
           throw new Error('Missing required params');
@@ -34,14 +34,11 @@ export class LoginComponent implements OnInit {
       })
       .then(response => {
         if (response.data) {
-          this.buildForm(response.data['fields'])
+          this.authService.setUser(response.data['user']);
+          this.authService.setToken(response.data['token']);
         }
       })
       .catch(e => console.warn(e));
-  }
-
-  buildForm(fields: any) {
-    console.log(fields);
   }
 
   submitForm() {

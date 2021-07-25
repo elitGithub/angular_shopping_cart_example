@@ -6,13 +6,13 @@ namespace App\Controllers;
 use App\Application;
 use App\Controller;
 use App\DB\DbModel;
-use App\Forms\AuthForm;
-use App\Forms\Form;
+use App\Helpers\JWTHelper;
 use App\Middlewares\AuthMiddleware;
 use App\Request;
 use App\Response;
 use App\Models\LoginForm;
 use App\Models\User;
+use App\Session;
 
 /**
  * Class AuthController
@@ -21,19 +21,37 @@ use App\Models\User;
 class AuthController extends Controller
 {
 
-    public function getLoginForm(Request $request, Response $response)
+    public function isLoggedIn(Request $request, Response $response)
     {
-        $formName = Form::hasForm($request->getPath());
-        if ($formName) {
-            $response
-                ->setSuccess(true)
-                ->setData(['fields' => AuthForm::formFields()])
-                ->sendResponse();
+        // TODO: validate this part
+        $session = new Session();
+        $token = $session->get('token');
+        $userid = $session->get('userid');
+        $authToken = $request->getBody()['token'] ?? null;
+        if ($userid && $token && ($token === $authToken)) {
+            $valid = JWTHelper::validate($token);
+            $authValid = JWTHelper::validate($authToken);
+            if ($valid && $authValid) {
+                $user = User::findOne([User::primaryKey() => $userid]);
+                $response
+                    ->setSuccess(true)
+                    ->setData([
+                        'user' => [
+                            'username'     => $user->username,
+                            'display_name' => $user->getDisplayName(),
+                            'user_image'   => $user->user_image,
+                            'description'  => $user->description,
+                            'role'         => $user->getRole(),
+                        ],
+                    ])
+                    ->sendResponse();
+            }
         }
 
         $response
             ->setSuccess(false)
-            ->setMessage('Data not found')
+            ->setMessage('User is not logged in')
+            ->setData(['mustLogin' => true])
             ->sendResponse();
     }
 
@@ -84,8 +102,9 @@ class AuthController extends Controller
 
     public function logout(Request $request, Response $response)
     {
+        // TODO: add token validation and flushing
         Application::$app->logout();
-        $response->redirect('/');
+        $response->setSuccess(true)->sendResponse();
     }
 
     public function profile(): bool|array|string
@@ -96,12 +115,12 @@ class AuthController extends Controller
 
     function getModel(): DbModel
     {
-        // TODO: Implement getModel() method.
+        return new User();
     }
 
     public function allowedNotSecureActions(): array
     {
-        return ['login', 'getLoginForm'];
+        return ['login', 'isLoggedIn'];
     }
 
     public function usedMiddlewares(): array

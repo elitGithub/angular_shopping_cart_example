@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver } from "@angular/cdk/layout";
 import { User } from "../../interfaces/user";
 import { AuthService } from "../../services/auth.service";
+import { BehaviorSubject } from "rxjs";
 
 @Component({
   selector: 'app-navbar',
@@ -24,6 +25,17 @@ export class NavbarComponent implements OnInit {
     // TODO: add permission service to check for allowed actions
     // TODO: add the user data to the form.
     this.allowedToManageUsers = true;
-    this.user = this.authService.getUser();
+    const user = this.authService.getUser();
+    if (user) {
+      this.user = user;
+    }
+    console.log(this.authService.getUserData().then(res => this.authService.createApiResponse(res)).then(res => {
+      if (res.success) {
+        return this.user = res.data['user'];
+      } else {
+        this.authService.isAuthenticated = new BehaviorSubject<boolean>(false);
+        this.authService.setToken(null);
+      }
+    }));
   }
 }

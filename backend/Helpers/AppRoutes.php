@@ -21,10 +21,11 @@ class AppRoutes
                 '/'          => [SiteController::class, 'home'],
                 'products'   => [ProductsController::class, 'index'],
                 'categories' => [CategoryController::class, 'index'],
-                'login'      => [AuthController::class, 'getLoginForm'],
+                'login'      => [AuthController::class, 'isLoggedIn'],
             ],
             'post'    => [
-                'login' => [AuthController::class, 'login'],
+                'login'  => [AuthController::class, 'login'],
+                'logout' => [AuthController::class, 'logout'],
             ],
             'put'     => [],
             'delete'  => [],
