@@ -7,14 +7,15 @@ import { BehaviorSubject } from "rxjs";
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: [ './navbar.component.scss' ]
 })
 export class NavbarComponent implements OnInit {
 
   public allowedToManageUsers: boolean = false;
   public user: User;
 
-  constructor(private observer: BreakpointObserver, private authService: AuthService) {}
+  constructor(private observer: BreakpointObserver, private authService: AuthService) {
+  }
 
 
   myPreferences() {
@@ -29,13 +30,15 @@ export class NavbarComponent implements OnInit {
     if (user) {
       this.user = user;
     }
-    console.log(this.authService.getUserData().then(res => this.authService.createApiResponse(res)).then(res => {
-      if (res.success) {
-        return this.user = res.data['user'];
-      } else {
-        this.authService.isAuthenticated = new BehaviorSubject<boolean>(false);
-        this.authService.setToken(null);
-      }
-    }));
+    console.log(this.authService.getUserData()
+      .then(res => this.authService.createApiResponse(res))
+      .then(res => {
+        if (res.success) {
+          return this.user = res.data['user'];
+        } else {
+          this.authService.isAuthenticated = new BehaviorSubject<boolean>(false);
+          this.authService.setToken(null);
+        }
+      }));
   }
 }
