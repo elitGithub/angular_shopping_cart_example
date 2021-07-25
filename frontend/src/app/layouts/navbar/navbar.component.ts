@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver } from "@angular/cdk/layout";
 import { User } from "../../interfaces/user";
 import { AuthService } from "../../services/auth.service";
