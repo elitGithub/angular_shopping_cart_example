@@ -16,7 +16,7 @@ export class AppComponent implements AfterViewInit{
 
 
   constructor(private observer: BreakpointObserver, public authService: AuthService) {
-    if (this.authService.hasAuthToken()) {
+    if (this.authService.hasAuthToken().length > 0) {
       this.authService.isAuthenticated = new BehaviorSubject<boolean>(true);
     }
   }

@@ -22,36 +22,29 @@ class AuthController extends Controller
 {
 
     public function getUserData() {
-        var_dump($_COOKIE);
-        var_dump($_REQUEST);
-        var_dump($_SERVER);
+        // TODO: get user data and return it.
+        // From Token?
+        echo "SUCCESS";
     }
 
     public function isLoggedIn(Request $request, Response $response)
     {
         // TODO: validate this part
-        $session = new Session();
-        $token = $session->get('token');
-        $userid = $session->get('userid');
-        $authToken = $request->getBody()['token'] ?? null;
-        if ($userid && $token && ($token === $authToken)) {
-            $valid = JWTHelper::validate($token);
-            $authValid = JWTHelper::validate($authToken);
-            if ($valid && $authValid) {
-                $user = User::findOne([User::primaryKey() => $userid]);
-                $response
-                    ->setSuccess(true)
-                    ->setData([
-                        'user' => [
-                            'username'     => $user->username,
-                            'display_name' => $user->getDisplayName(),
-                            'user_image'   => $user->user_image,
-                            'description'  => $user->description,
-                            'role'         => $user->getRole(),
-                        ],
-                    ])
-                    ->sendResponse();
-            }
+        $session = Application::$app->session;
+        if ($session->validateSession()) {
+            $user = User::findOne([User::primaryKey() => $session->get('userid')]);
+            $response
+                ->setSuccess(true)
+                ->setData([
+                    'user' => [
+                        'username'     => $user->username,
+                        'display_name' => $user->getDisplayName(),
+                        'user_image'   => $user->user_image,
+                        'description'  => $user->description,
+                        'role'         => $user->getRole(),
+                    ],
+                ])
+                ->sendResponse();
         }
 
         $response

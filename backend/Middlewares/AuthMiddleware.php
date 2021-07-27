@@ -21,7 +21,7 @@ class AuthMiddleware extends BaseMiddleware
         if (Application::isGuest()) {
             if (!empty($this->secureActions)) {
                 // Check for token and validity
-                if (is_null(Application::$app->request->getHeaders())) {
+                if (!Application::$app->session->validateSession()) {
                     throw new ForbiddenException();
                 }
             }

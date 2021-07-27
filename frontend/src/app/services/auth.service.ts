@@ -19,7 +19,6 @@ export class AuthService {
   public appPath = '';
   public token = '';
   private loginUrl = '';
-  private isAuthUrl = '';
   private isLoggedInUrl = '';
   public user: User;
 
@@ -27,7 +26,6 @@ export class AuthService {
     this.token = this.hasAuthToken();
     this.appPath = this.configService.getApiUrl();
     this.loginUrl = `${ this.appPath }login`;
-    this.isAuthUrl = `${ this.appPath }login`;
     this.isLoggedInUrl = `${ this.appPath }isLoggedIn`;
 
   }
@@ -54,7 +52,7 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return this.http.post(this.isAuthUrl, { token: this.token }).toPromise().then(res => this.createApiResponse(res));
+    return this.http.post(this.isLoggedInUrl, { token: this.token }).toPromise().then(res => this.createApiResponse(res));
   }
 
   setUser(data) {
@@ -67,7 +65,7 @@ export class AuthService {
 
   getUserData() {
     const headers: HttpHeaders = new HttpHeaders()
-      .set('Authorization', `Bearer ${ this.cookieService.get('auth-token') }`);
+      .set('Authorization', `Bearer ${ this.token }`);
     return this.http.get(`${ this.appPath }/getUserData`, { 'headers': headers }).toPromise().then(res => this.createApiResponse(res));
   }
 

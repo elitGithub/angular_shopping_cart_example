@@ -13,6 +13,7 @@ if (strtolower($_SERVER['REQUEST_METHOD']) === 'options') {
     http_response_code(ResponseCodes::HTTP_OK);
     die('0');
 }
+
 require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__));

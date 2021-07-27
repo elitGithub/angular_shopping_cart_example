@@ -18,6 +18,7 @@ class URL
             return $url;
         }
         $segments = explode('/', $url);
+        $segments = array_values(array_filter($segments));
         $requestedRoute = end($segments);
         $hasQueryParams = strpos($requestedRoute, '?');
         if (!$hasQueryParams) {

@@ -3,6 +3,7 @@ import { BreakpointObserver } from "@angular/cdk/layout";
 import { User } from "../../interfaces/user";
 import { AuthService } from "../../services/auth.service";
 import { BehaviorSubject } from "rxjs";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +15,7 @@ export class NavbarComponent implements OnInit {
   public allowedToManageUsers: boolean = false;
   public user: User;
 
-  constructor(private observer: BreakpointObserver, private authService: AuthService) {
+  constructor(private observer: BreakpointObserver, private authService: AuthService, private router: Router) {
   }
 
 
@@ -29,16 +30,19 @@ export class NavbarComponent implements OnInit {
     const user = this.authService.getUser();
     if (user) {
       this.user = user;
+    } else {
+      this.authService.getUserData()
+        .then(res => this.authService.createApiResponse(res))
+        .then(res => {
+          if (res.success) {
+            this.user = res.data['user'];
+            return this.router.navigateByUrl('/dashboard');
+          } else {
+            this.authService.isAuthenticated = new BehaviorSubject<boolean>(false);
+            this.authService.setToken(null);
+            return this.router.navigateByUrl('/login');
+          }
+        });
     }
-    console.log(this.authService.getUserData()
-      .then(res => this.authService.createApiResponse(res))
-      .then(res => {
-        if (res.success) {
-          return this.user = res.data['user'];
-        } else {
-          this.authService.isAuthenticated = new BehaviorSubject<boolean>(false);
-          this.authService.setToken(null);
-        }
-      }));
   }
 }

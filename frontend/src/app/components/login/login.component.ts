@@ -60,6 +60,7 @@ export class LoginComponent implements OnInit {
         } else {
           this.isLoading = false;
           this.authService.isAuthenticated = new BehaviorSubject<boolean>(true);
+          console.log(res.data);
           this.authService.setToken(res.data['token']);
           this.authService.setUser(res.data['userData']);
           this.router.navigateByUrl('dashboard');
