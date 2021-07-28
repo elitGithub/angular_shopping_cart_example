@@ -33,9 +33,12 @@ export class LoginComponent implements OnInit {
         return response;
       })
       .then(response => {
-        if (response.data) {
-          this.authService.setUser(response.data['user']);
+        if (response.data['token']) {
           this.authService.setToken(response.data['token']);
+        }
+
+        if (response.data['user']) {
+          this.authService.setUser(response.data['user']);
         }
       })
       .catch(e => console.warn(e));

@@ -1,20 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from "./components/not-found/not-found.component";
-import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { LoginComponent } from "./components/login/login.component";
-import { ProductsComponent } from "./components/products/products.component";
 import { CategoriesComponent } from "./components/categories/categories.component";
 import { UsersComponent } from "./components/users/users.component";
 
 const routes: Routes = [
   {
     path: 'dashboard',
-    component: DashboardComponent,
+    loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
     path: 'products',
-    component: ProductsComponent,
+    loadChildren: () => import('./components/products/products.module').then(m => m.ProductsModule)
   },
   {
     path: 'categories',

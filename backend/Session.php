@@ -28,12 +28,27 @@ class Session
     public function validateSession(): bool
     {
         $headers = Application::$app->request->getHeaders();
-        $authToken = str_replace('Bearer ', '', $headers['Authorization']) ?? null;
+        $request = Application::$app->request->getBody();
+        if (isset($headers['Authorization'])) {
+            $authToken = str_replace('Bearer ', '', $headers['Authorization']) ?? null;
+        }
+
+        if (isset($request['token'])) {
+            $authToken = str_replace('Bearer ', '', $request['token']) ?? null;
+        }
+
+        if (!$authToken) {
+            return false;
+        }
+
         if (JWTHelper::validate($authToken)) {
+            $payload = JWTHelper::parseToken($authToken);
             $this->set('token', $authToken);
+            $this->set('userid', $payload['user_id']);
             return true;
         }
         return false;
+
     }
 
     public function setFlash($key, $message)

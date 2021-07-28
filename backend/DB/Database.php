@@ -5,6 +5,7 @@ namespace App\DB;
 
 
 use App\Application;
+use App\Migration;
 use Exception;
 use PDO;
 use PDOStatement;
@@ -38,7 +39,7 @@ class Database
         $this->currentBatch();
         $appliedMigrations = $this->getAppliedMigrations();
 
-        $files = scandir(Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'migrations');
+        $files = scandir(Application::$ROOT_DIR . DIRECTORY_SEPARATOR . Migration::$migrationsDir);
 
         $toApplyMigrations = array_diff($files, $appliedMigrations);
         foreach ($toApplyMigrations as $migration) {
@@ -46,7 +47,7 @@ class Database
                 continue;
             }
 
-            require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR . $migration;
+            require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . Migration::$migrationsDir . DIRECTORY_SEPARATOR . $migration;
             $className = pathinfo($migration, PATHINFO_FILENAME);
             $this->addNameSpace($className);
             $instance = new $className();
@@ -77,7 +78,7 @@ class Database
         $migrations = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($migrations as $migration) {
-            require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR . $migration;
+            require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . Migration::$migrationsDir . DIRECTORY_SEPARATOR . $migration;
             $className = pathinfo($migration, PATHINFO_FILENAME);
             $this->addNameSpace($className);
             $instance = new $className();
@@ -115,7 +116,7 @@ class Database
     protected function addNameSpace(array|string &$className)
     {
         if (is_string($className)) {
-            $className = "\\App\Migrations\\$className";
+            $className = "\\App\.".Migration::$migrationsDir. ".\\$className";
         }
     }
 

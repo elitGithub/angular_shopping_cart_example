@@ -12,7 +12,6 @@ use App\Request;
 use App\Response;
 use App\Models\LoginForm;
 use App\Models\User;
-use App\Session;
 
 /**
  * Class AuthController
@@ -21,10 +20,31 @@ use App\Session;
 class AuthController extends Controller
 {
 
-    public function getUserData() {
-        // TODO: get user data and return it.
-        // From Token?
-        echo "SUCCESS";
+    public function getUserData(Request $request, Response $response)
+    {
+        $headers = $request->getHeaders();
+
+        $payload = JWTHelper::parseToken($headers['Authorization']);
+        if (isset($payload['user_id'])) {
+            $user = User::findOne([User::primaryKey() => $payload['user_id']]);
+            $response
+                ->setSuccess(true)
+                ->setData([
+                    'user' => [
+                        'username'     => $user->username,
+                        'display_name' => $user->getDisplayName(),
+                        'user_image'   => $user->user_image,
+                        'description'  => $user->description,
+                        'role'         => $user->getRole(),
+                    ],
+                ])
+                ->sendResponse();
+        }
+        $response
+            ->setSuccess(false)
+            ->setMessage('User not found')
+            ->setData(['mustLogin' => true])
+            ->sendResponse();
     }
 
     public function isLoggedIn(Request $request, Response $response)

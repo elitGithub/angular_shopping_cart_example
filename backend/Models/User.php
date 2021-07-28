@@ -158,7 +158,7 @@ class User extends UserModel
             'username'     => $this->username,
             'display_name' => $this->getDisplayName(),
             'role'         => $this->getRole(),
-            'user_image'   => $this->user_image ?? Application::$ROOT_DIR . '/public_assets/placeholder.png',
+            'user_image'   => $this->user_image ?? 'https://via.placeholder.com/150',
             'description'  => $this->description ?? '',
         ];
     }

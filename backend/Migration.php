@@ -10,6 +10,7 @@ use PDO;
 abstract class Migration
 {
 	public Database $db;
+	public static string $migrationsDir = 'Migrations';
 
 	public function __construct()
 	{

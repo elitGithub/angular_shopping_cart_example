@@ -2,7 +2,7 @@
   response craps
 </mat-toolbar>
 
-<mat-sidenav-container>
+<mat-sidenav-container *ngIf="user">
   <mat-sidenav mode="side" class="mat-elevation-z8" opened>
     <img class="avatar mat-elevation-z8" src="{{ user.user_image }}"  alt="user avatar"/>
 

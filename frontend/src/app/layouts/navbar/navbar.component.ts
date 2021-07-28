@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { BreakpointObserver } from "@angular/cdk/layout";
 import { User } from "../../interfaces/user";
 import { AuthService } from "../../services/auth.service";
 import { BehaviorSubject } from "rxjs";
@@ -15,12 +14,13 @@ export class NavbarComponent implements OnInit {
   public allowedToManageUsers: boolean = false;
   public user: User;
 
-  constructor(private observer: BreakpointObserver, private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router) {
   }
 
 
   myPreferences() {
     console.log('joy');
+    console.log('llllllllll');
   }
 
   ngOnInit(): void {

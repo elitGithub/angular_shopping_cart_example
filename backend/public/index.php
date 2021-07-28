@@ -5,12 +5,13 @@ use App\Helpers\ResponseCodes;
 use App\Models\User;
 use App\Application;
 use Dotenv\Dotenv;
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: http://localhost:4200");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 if (strtolower($_SERVER['REQUEST_METHOD']) === 'options') {
     http_response_code(ResponseCodes::HTTP_OK);
+    header('HTTP/1.1 200 OK');
     die('0');
 }
 
