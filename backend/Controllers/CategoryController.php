@@ -6,10 +6,11 @@ namespace App\Controllers;
 
 use App\Controller;
 use App\DB\DbModel;
+use App\Interfaces\HasModel;
 use App\Middlewares\AuthMiddleware;
 use App\Models\Category;
 
-class CategoryController extends Controller
+class CategoryController extends Controller implements HasModel
 {
     public function index()
     {

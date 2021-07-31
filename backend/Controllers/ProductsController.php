@@ -4,10 +4,11 @@
 namespace App\Controllers;
 
 use App\Controller;
+use App\Interfaces\HasModel;
 use App\Middlewares\AuthMiddleware;
 use App\Models\Product;
 
-class ProductsController extends Controller
+class ProductsController extends Controller implements HasModel
 {
 
     public function index()

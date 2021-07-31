@@ -52,11 +52,6 @@ class SiteController extends Controller
 		]);
 	}
 
-    function getModel(): DbModel
-    {
-        // TODO: Implement getModel() method.
-    }
-
     public function allowedNotSecureActions(): array
     {
         return ['login'];

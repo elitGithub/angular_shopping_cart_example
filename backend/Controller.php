@@ -47,8 +47,6 @@ abstract class Controller implements Auth
         return $this->$name;
     }
 
-    abstract function getModel(): DbModel;
-
     public function render($view, $params = []): bool|array|string
     {
         return Application::$app->view->renderView($view, $params);

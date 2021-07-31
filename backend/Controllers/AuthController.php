@@ -8,6 +8,7 @@ use App\Controller;
 use App\DB\DbModel;
 use App\Helpers\JWTHelper;
 use App\Helpers\PlaceHolders;
+use App\Interfaces\HasModel;
 use App\Middlewares\AuthMiddleware;
 use App\Request;
 use App\Response;
@@ -18,7 +19,7 @@ use App\Models\User;
  * Class AuthController
  * @package App\controllers
  */
-class AuthController extends Controller
+class AuthController extends Controller implements HasModel
 {
 
     public function getUserData(Request $request, Response $response)
