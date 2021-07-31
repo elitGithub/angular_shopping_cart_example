@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Application;
 use App\Exceptions\UserNotFoundException;
+use App\Helpers\PlaceHolders;
 use App\UserModel;
 use Exception;
 use PDO;
@@ -158,7 +158,7 @@ class User extends UserModel
             'username'     => $this->username,
             'display_name' => $this->getDisplayName(),
             'role'         => $this->getRole(),
-            'user_image'   => $this->user_image ?? 'https://via.placeholder.com/150',
+            'user_image'   => $this->user_image ?? PlaceHolders::AVATAR_PLACEHOLDER,
             'description'  => $this->description ?? '',
         ];
     }

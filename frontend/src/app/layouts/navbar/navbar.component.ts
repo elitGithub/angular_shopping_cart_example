@@ -3,6 +3,7 @@ import { User } from "../../interfaces/user";
 import { AuthService } from "../../services/auth.service";
 import { BehaviorSubject } from "rxjs";
 import { Router } from "@angular/router";
+import { checkResponse } from "../../utils/utils";
 
 @Component({
   selector: 'app-navbar',
@@ -34,7 +35,7 @@ export class NavbarComponent implements OnInit {
       this.authService.getUserData()
         .then(res => this.authService.createApiResponse(res))
         .then(res => {
-          if (res.success) {
+          if (checkResponse(res)) {
             this.user = res.data['user'];
             return this.router.navigateByUrl('/dashboard');
           } else {
@@ -42,7 +43,11 @@ export class NavbarComponent implements OnInit {
             this.authService.setToken(null);
             return this.router.navigateByUrl('/login');
           }
-        });
+        }).catch(e => {
+        this.authService.isAuthenticated = new BehaviorSubject<boolean>(false);
+        this.authService.setToken(null);
+        return this.router.navigateByUrl('/login');
+      });
     }
   }
 }

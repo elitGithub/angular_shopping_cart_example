@@ -13,6 +13,7 @@ import { BehaviorSubject } from "rxjs";
 export class LoginComponent implements OnInit {
 
   isLoading = false;
+  hide = true;
   form = new FormGroup({
     username: new FormControl(null, Validators.required),
     password: new FormControl(null, Validators.required),
@@ -28,7 +29,7 @@ export class LoginComponent implements OnInit {
       .isLoggedIn()
       .then(response => {
         if (!checkResponse(response)) {
-          throw new Error('Missing required params');
+          this.authService.isAuthenticated = new BehaviorSubject(false);
         }
         return response;
       })

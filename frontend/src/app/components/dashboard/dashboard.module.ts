@@ -13,6 +13,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { HttpClientModule } from "@angular/common/http";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { CardComponent } from './card/card.component';
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { DashboardLoadingComponent } from './dashboard-loading/dashboard-loading.component';
 
 const routes: Routes = [
   {
@@ -23,22 +26,23 @@ const routes: Routes = [
 
 
 @NgModule({
-  declarations: [DashboardComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatIconModule,
-    MatSidenavModule,
-    MatListModule,
-    MatGridListModule,
-    MatCardModule,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    HttpClientModule,
-    MatToolbarModule,
-    MatFormFieldModule,
-    MatMenuModule,
-  ]
+  declarations: [DashboardComponent, CardComponent, DashboardLoadingComponent],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatIconModule,
+        MatSidenavModule,
+        MatListModule,
+        MatGridListModule,
+        MatCardModule,
+        MatButtonModule,
+        MatInputModule,
+        MatFormFieldModule,
+        HttpClientModule,
+        MatToolbarModule,
+        MatFormFieldModule,
+        MatMenuModule,
+        MatTooltipModule,
+    ]
 })
 export class DashboardModule { }

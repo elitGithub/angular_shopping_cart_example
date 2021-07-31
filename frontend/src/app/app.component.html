@@ -1,2 +1,4 @@
-<app-navbar *ngIf="authService.isAuthenticated"></app-navbar>
-<app-login *ngIf="!authService.isAuthenticated.value"></app-login>
+<div class="wrapper">
+  <app-navbar *ngIf="authService.isAuthenticated.value"></app-navbar>
+  <app-login *ngIf="!authService.isAuthenticated.value"></app-login>
+</div>

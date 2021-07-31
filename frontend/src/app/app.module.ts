@@ -19,41 +19,44 @@ import { HttpClientModule } from "@angular/common/http";
 import { LoginComponent } from './components/login/login.component';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SpinnerComponent } from './components/spinner/spinner.component';
-import { ProductsComponent } from './components/products/products.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { UsersComponent } from './components/users/users.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    NotFoundComponent,
-    LoginComponent,
-    SpinnerComponent,
-    CategoriesComponent,
-    UsersComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    AppRoutingModule,
-    MatIconModule,
-    MatListModule,
-    MatGridListModule,
-    MatCardModule,
-    MatMenuModule,
-    HttpClientModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        NavbarComponent,
+        NotFoundComponent,
+        LoginComponent,
+        SpinnerComponent,
+        CategoriesComponent,
+        UsersComponent
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        LayoutModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatSidenavModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatListModule,
+        MatGridListModule,
+        MatCardModule,
+        MatMenuModule,
+        HttpClientModule,
+        MatFormFieldModule,
+        MatInputModule
+    ],
+    providers: [],
+    exports: [
+        SpinnerComponent
+    ],
+    bootstrap: [ AppComponent ]
 })
 export class AppModule { }

@@ -29,6 +29,7 @@ class Session
     {
         $headers = Application::$app->request->getHeaders();
         $request = Application::$app->request->getBody();
+        $authToken = null;
         if (isset($headers['Authorization'])) {
             $authToken = str_replace('Bearer ', '', $headers['Authorization']) ?? null;
         }

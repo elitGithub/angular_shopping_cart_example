@@ -7,6 +7,7 @@ use App\Application;
 use App\Controller;
 use App\DB\DbModel;
 use App\Helpers\JWTHelper;
+use App\Helpers\PlaceHolders;
 use App\Middlewares\AuthMiddleware;
 use App\Request;
 use App\Response;
@@ -33,7 +34,7 @@ class AuthController extends Controller
                     'user' => [
                         'username'     => $user->username,
                         'display_name' => $user->getDisplayName(),
-                        'user_image'   => $user->user_image,
+                        'user_image'   => $user->user_image ?? PlaceHolders::AVATAR_PLACEHOLDER,
                         'description'  => $user->description,
                         'role'         => $user->getRole(),
                     ],
@@ -59,7 +60,7 @@ class AuthController extends Controller
                     'user' => [
                         'username'     => $user->username,
                         'display_name' => $user->getDisplayName(),
-                        'user_image'   => $user->user_image,
+                        'user_image'   => $user->user_image ?? PlaceHolders::AVATAR_PLACEHOLDER,
                         'description'  => $user->description,
                         'role'         => $user->getRole(),
                     ],
