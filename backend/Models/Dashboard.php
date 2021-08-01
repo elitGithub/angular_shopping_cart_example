@@ -29,16 +29,13 @@ class Dashboard extends RepositoryModel
      */
     public function getTotalPending()
     {
-        return $this->table('orders')->where('completed', '0')->count('total_pending')[0]['total_pending'];
+        return $this->table('orders')->where('completed', '=', '0')->count('total_pending')[0]['total_pending'];
     }
 
 
     /**
 
-     * total orders (completed and not)
-     * total completed orders
-     * total pending orders
-     * total registered users
+     * total registered clients
      * total guest visits
      */
 
