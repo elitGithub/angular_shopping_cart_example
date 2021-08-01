@@ -101,6 +101,7 @@ class RepositoryModel extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    //TODO: we'll need to make this into a smarter select.
     protected function get(array|string $columns = ['*']): static
     {
         if (is_array($columns)) {
