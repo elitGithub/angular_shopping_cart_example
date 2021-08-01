@@ -6,7 +6,12 @@ namespace App\Controllers;
 use App\Application;
 use App\Controller;
 use App\DB\DbModel;
+use App\Exceptions\TooFewArgumentsSupplied;
+use App\Exceptions\TooManyArgsException;
+use App\Helpers\JWTHelper;
+use App\Interfaces\HasModel;
 use App\Middlewares\AuthMiddleware;
+use App\Models\Dashboard;
 use App\Request;
 use App\Response;
 use App\Models\ContactForm;
@@ -17,18 +22,30 @@ use App\Models\ContactForm;
  */
 class SiteController extends Controller
 {
-	public function home(): bool|array|string
-	{
-		$params = [
-			'name'      => 'Eli',
-			'pageTitle' => 'My super awesome app',
-		];
+    /**
+     * @throws TooManyArgsException
+     * @throws TooFewArgumentsSupplied
+     */
+    public function home(Request $request, Response $response)
+    {
+        $dashboard = new Dashboard();
+        $data = [
+            'total_orders'    => $dashboard->getTotalOrders(),
+            'total_completed' => $dashboard->getTotalCompletedOrders(),
+            'total_pending'   => $dashboard->getTotalPending(),
+        ];
+        var_dump($data);
+        die();
+        /**
+         * total pending orders
+         * total registered users
+         * total guest visits
+         */
+    }
 
-		return $this->render('home', $params);
-	}
-
-	public function options() {
-	    http_response_code(200);
+    public function options()
+    {
+        http_response_code(200);
         header("Access-Control-Allow-Origin: http://localhost:4200");
         header("Content-Type: application/json; charset=UTF-8");
         header("Access-Control-Allow-Methods: POST, DELETE, OPTIONS");
@@ -36,21 +53,21 @@ class SiteController extends Controller
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     }
 
-	public function contact(Request $request, Response $response): bool|array|string
-	{
-		$contact = new ContactForm();
-		if ($request->isPost()) {
-			$contact->loadData($request->getBody());
-			if ($contact->validate() && $contact->send()) {
-				Application::$app->session->setFlash('success', 'Thanks for contact us');
-				$response->redirect('/contact');
-			}
-		}
+    public function contact(Request $request, Response $response): bool|array|string
+    {
+        $contact = new ContactForm();
+        if ($request->isPost()) {
+            $contact->loadData($request->getBody());
+            if ($contact->validate() && $contact->send()) {
+                Application::$app->session->setFlash('success', 'Thanks for contact us');
+                $response->redirect('/contact');
+            }
+        }
 
-		return $this->render('contact', [
-			'model' => $contact
-		]);
-	}
+        return $this->render('contact', [
+            'model' => $contact,
+        ]);
+    }
 
     public function allowedNotSecureActions(): array
     {
@@ -60,7 +77,7 @@ class SiteController extends Controller
     public function usedMiddlewares(): array
     {
         return [
-            AuthMiddleware::class
+            AuthMiddleware::class,
         ];
     }
 }

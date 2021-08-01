@@ -6,6 +6,7 @@ use App\Controllers\AuthController;
 use App\Controllers\SiteController;
 use App\Exceptions\NotFoundException;
 use JetBrains\PhpStorm\Pure;
+use mysql_xdevapi\Exception;
 
 /**
  * Class Router

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from "../../services/api.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -9,16 +10,16 @@ export class DashboardComponent implements OnInit {
   isLoading: boolean = false;
   cards = [];
 
-  constructor() {
+  constructor(private apiService: ApiService) {
   }
 
   ngOnInit() {
     this.fetchDashboard();
-    console.log(this.isLoading);
   }
 
-  fetchDashboard() {
+  async fetchDashboard() {
     this.isLoading = true;
+    await this.apiService.getDashboard();
   }
 
 

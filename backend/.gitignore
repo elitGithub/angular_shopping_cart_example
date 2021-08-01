@@ -36,3 +36,4 @@ Project_Default.xml
 #composer
 vender/
 composer.lock
+vendor/*
