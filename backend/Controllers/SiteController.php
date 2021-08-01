@@ -37,7 +37,6 @@ class SiteController extends Controller
         var_dump($data);
         die();
         /**
-         * total pending orders
          * total registered users
          * total guest visits
          */

@@ -5,6 +5,8 @@ namespace App\DB;
 
 
 use App\Application;
+use App\Exceptions\TooFewArgumentsSupplied;
+use App\Exceptions\TooManyArgsException;
 use App\Migration;
 use Exception;
 use PDO;
@@ -20,7 +22,27 @@ class Database
     public PDO $pdo;
 
     public int $batch = 1;
-    private array $skipMigrations = ['.', '..'];
+
+    protected string $table;
+    protected string|array $columns;
+    /**
+     * @var mixed|string
+     */
+    protected mixed $alias;
+    protected array|string $where;
+    private array $sqlComparisonOperators = [
+        '=',
+        '<>',
+        '>',
+        '<',
+        '!=',
+        '>=',
+        '<=',
+        'LIKE',
+        'NOT LIKE',
+        'IS NOT NULL',
+        'IS NULL',
+    ];
 
     public function __construct(array $config)
     {
@@ -33,124 +55,120 @@ class Database
         $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     }
 
-    public function applyMigrations()
+    public function rawQuery($sql): bool|array
     {
-        $this->createMigrationsTable();
-        $this->currentBatch();
-        $appliedMigrations = $this->getAppliedMigrations();
+        $stmt = static::prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 
-        $files = scandir(Application::$ROOT_DIR . DIRECTORY_SEPARATOR . Migration::$migrationsDir);
+    public static function prepare($sql): bool|PDOStatement
+    {
+        return Application::$app->db->pdo->prepare($sql);
+    }
 
-        $toApplyMigrations = array_diff($files, $appliedMigrations);
-        foreach ($toApplyMigrations as $migration) {
-            if (in_array($migration, $this->skipMigrations)) {
-                continue;
-            }
+    public function table(string $table): static
+    {
+        $this->table = $table;
+        return $this;
+    }
 
-            require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . Migration::$migrationsDir . DIRECTORY_SEPARATOR . $migration;
-            $className = pathinfo($migration, PATHINFO_FILENAME);
-            $this->addNameSpace($className);
-            $instance = new $className();
+    /**
+     * @throws TooManyArgsException
+     * @throws TooFewArgumentsSupplied
+     */
+    public function where(): static
+    {
+        $args = func_get_args();
 
-            $this->consoleOutput("Migrating $migration");
-            try {
-                $instance->up();
-                $this->consoleOutput("Migrated $migration");
-                $newMigrations[] = $migration;
-            } catch (Exception $e) {
-                $this->consoleOutput($e->getMessage());
-                continue;
-            }
-
+        // TODO: bind?! Validation!?
+        if (empty($args)) {
+            throw new TooFewArgumentsSupplied();
+        }
+        if (sizeof($args) > 3) {
+            throw new TooManyArgsException();
+        }
+        if (is_array($args[0])) {
+            $this->where[] = $args[0];
         }
 
-        if (!empty($newMigrations)) {
-            $this->saveMigrations($newMigrations);
+        if (in_array($args[1], $this->sqlComparisonOperators)) {
+            $this->where[] = $this->createWhere($args);
         } else {
-            $this->consoleOutput("No new migrations to apply");
-        }
-    }
-
-    public function reverseMigrations()
-    {
-        $stmt = $this->pdo->prepare('SELECT migration FROM migrations WHERE batch IN (SELECT MAX(batch) AS batch FROM migrations);');
-        $stmt->execute();
-        $migrations = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        foreach ($migrations as $migration) {
-            require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . Migration::$migrationsDir . DIRECTORY_SEPARATOR . $migration;
-            $className = pathinfo($migration, PATHINFO_FILENAME);
-            $this->addNameSpace($className);
-            $instance = new $className();
-
-            $this->consoleOutput("Rolling Back $migration");
-            $instance->down();
-            $this->consoleOutput("Rolled Back $migration");
-            $reversedMigrations[] = $migration;
+            $this->where[] = "$args[0] = $args[1]";
         }
 
-        if (!empty($reversedMigrations)) {
-            $this->deleteMigrations($reversedMigrations);
-        } else {
-            $this->consoleOutput('No migrations to roll back');
+
+        return $this;
+    }
+
+    // TODO: there has got to be a better way of doing this...
+    public function count($alias = ''): array|bool
+    {
+        $this->columns = 'COUNT(*)';
+        if (!empty($alias)) {
+            $this->columns = 'COUNT(*) AS ' . $alias;
         }
-    }
+        $sql = "SELECT $this->columns FROM $this->table";
 
-    public function createMigrationsTable()
-    {
-        $this->pdo->exec("CREATE TABLE IF NOT EXISTS migrations (
-    			id INT AUTO_INCREMENT PRIMARY KEY,
-    			migration VARCHAR(255),
-    			batch INT,
-    			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
-    			ENGINE=INNODB");
-    }
-
-    protected function getAppliedMigrations(): array
-    {
-        $statement = $this->pdo->prepare("SELECT migration FROM migrations;");
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_COLUMN);
-    }
-
-    protected function addNameSpace(array|string &$className)
-    {
-        if (is_string($className)) {
-            $className = "\\App\.".Migration::$migrationsDir. ".\\$className";
+        if (!empty($this->where)) {
+            $sql .= " WHERE " . join(' AND ', $this->where) . " ";
         }
-    }
 
-    protected function saveMigrations(array $migrations)
-    {
-        $values = join(',', array_map(fn($m) => "('$m', $this->batch)", $migrations));
-        $stmt = $this->pdo->prepare("INSERT INTO migrations (migration, batch) VALUES $values");
+        $stmt = static::prepare($sql);
         $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    protected function deleteMigrations(array $migrations)
+    //TODO: we'll need to make this into a smarter select.
+    protected function get(array|string $columns = ['*']): static
     {
-        $toDelete = join(',', array_map(fn($m) => "'$m'", $migrations));
-        $stmt = $this->pdo->prepare("DELETE FROM migrations WHERE migration IN ($toDelete)");
+        if (is_array($columns)) {
+            $columns = join(', ', $columns);
+        }
+        $this->columns = $columns;
+        if (!empty($alias)) {
+            $this->alias = $alias;
+        }
+        return $this;
+    }
+
+    public function select(): bool|array
+    {
+        $columnList = $this->columns;
+        if (is_array($this->columns)) {
+            $columnList = join(',', $this->columns);
+        }
+        $sql = "SELECT $columnList FROM $this->table";
+
+        if (!empty($this->where)) {
+            $sql .= " WHERE " . join(' AND ', $this->where) . " ";
+        }
+
+        if (!empty($this->limits)) {
+            $sql .= " $this->limits ";
+        }
+        $stmt = static::prepare($sql);
         $stmt->execute();
+        return $stmt->fetchAll();
     }
 
-    protected function consoleOutput(string $message)
+    private function createWhere(array $args): string
     {
-        echo '[' . date('Y-m-d H:i:s') . '] - ' . $message . PHP_EOL;
-    }
-
-    public function prepare(string $query): bool|PDOStatement
-    {
-        return $this->pdo->prepare($query);
-    }
-
-
-    private function currentBatch()
-    {
-        $stmt = $this->pdo->prepare('SELECT MAX(batch) as batch FROM migrations');
-        $stmt->execute();
-        $max = $stmt->fetch(PDO::FETCH_ASSOC)['batch'];
-        $this->batch = ++$max;
+        return match (strtoupper($args[1])) {
+            '<>' => "$args[1] <> $args[2]",
+            '>' => "$args[1] > $args[2]",
+            '<' => "$args[1] < $args[2]",
+            '!=' => "$args[1] != $args[2]",
+            '>=' => "$args[1]>=$args[2]",
+            '<=' => "$args[1]<=$args[2]",
+            'LIKE' => "$args[1] LIKE %$args[2]%",
+            'NOT LIKE' => "$args[1] NOT LIKE %$args[2]%",
+            'IS NULL' => "$args[1] IS NULL",
+            'IS NOT NULL' => "$args[1] IS NOT NULL",
+            'STARTS WITH' => "$args[1] LIKE $args[2]%",
+            default => "$args[1] = $args[2]",
+        };
     }
 
     private function checkAndCreateDB(): void

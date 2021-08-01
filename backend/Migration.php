@@ -4,17 +4,16 @@
 namespace App;
 
 
-use App\DB\Database;
-use PDO;
+use App\DB\Migrator;
 
 abstract class Migration
 {
-	public Database $db;
+	public Migrator $db;
 	public static string $migrationsDir = 'Migrations';
 
 	public function __construct()
 	{
-		$this->db = Application::$app->db;
+		$this->db = Application::$app->migrator;
 	}
 
 	abstract public function up();

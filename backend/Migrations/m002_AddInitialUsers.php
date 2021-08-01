@@ -5,6 +5,7 @@ namespace App\Migrations;
 
 
 use App\Migration;
+use App\Model;
 use App\Models\User;
 
 class m002_AddInitialUsers extends Migration
@@ -19,7 +20,7 @@ class m002_AddInitialUsers extends Migration
             'password'         => 'nncRdXQyfDC3Pg74ZEXL6TCU',
             'confirm_password' => 'nncRdXQyfDC3Pg74ZEXL6TCU',
             'status'           => User::STATUS_ACTIVE,
-            'deleted'          => User::NOT_DELETED,
+            'deleted'          => Model::NOT_DELETED,
             'role_id'          => 'R1',
         ],
         [
@@ -30,7 +31,7 @@ class m002_AddInitialUsers extends Migration
             'password'         => 'bQGhQtcCHuvwcqUahegHshXZ',
             'confirm_password' => 'bQGhQtcCHuvwcqUahegHshXZ',
             'status'           => User::STATUS_ACTIVE,
-            'deleted'          => User::NOT_DELETED,
+            'deleted'          => Model::NOT_DELETED,
             'role_id'          => 'R2',
         ],
     ];

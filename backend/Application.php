@@ -3,6 +3,7 @@
 namespace App;
 
 use App\DB\Database;
+use App\DB\Migrator;
 use App\Helpers\ResponseCodes;
 use Exception;
 
@@ -24,6 +25,7 @@ class Application
     public string $userClass;
     public ?Controller $controller = null;
     public Database $db;
+    public Migrator $migrator;
     public Router $router;
     public Request $request;
     public Response $response;
@@ -35,6 +37,7 @@ class Application
     {
         static::$ROOT_DIR = $rootPath;
         $this->setApp($this);
+        $this->migrator = new Migrator($config['db']);
         $this->request = new Request();
         $this->response = new Response();
         $this->router = new Router($this->request, $this->response);

@@ -12,7 +12,7 @@ class Dashboard extends RepositoryModel
 
     public function getTotalOrders(): bool|string|int
     {
-        return $this->table('orders')->count('total_orders')[0]['total_orders'];
+        return $this->db->table('orders')->count('total_orders')[0]['total_orders'];
     }
 
     /**
@@ -20,7 +20,7 @@ class Dashboard extends RepositoryModel
      */
     public function getTotalCompletedOrders(): bool|string|int
     {
-        return $this->table('orders')->where('completed', '1')->count('total_completed')[0]['total_completed'];
+        return $this->db->table('orders')->where('completed', '1')->count('total_completed')[0]['total_completed'];
     }
 
     /**
@@ -29,7 +29,7 @@ class Dashboard extends RepositoryModel
      */
     public function getTotalPending()
     {
-        return $this->table('orders')->where('completed', '=', '0')->count('total_pending')[0]['total_pending'];
+        return $this->db->table('orders')->where('completed', '=', '0')->count('total_pending')[0]['total_pending'];
     }
 
 
