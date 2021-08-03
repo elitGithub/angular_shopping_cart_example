@@ -7,8 +7,6 @@ namespace App\DB;
 use App\Application;
 use App\Exceptions\TooFewArgumentsSupplied;
 use App\Exceptions\TooManyArgsException;
-use App\Migration;
-use Exception;
 use PDO;
 use PDOStatement;
 
@@ -115,7 +113,7 @@ class Database
             $sql .= " WHERE " . join(' AND ', $this->where) . " ";
         }
 
-        $stmt = static::prepare($sql);
+        $stmt = static::prepare(rtrim($sql, 'and'));
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -152,6 +150,8 @@ class Database
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public function whereIn($column, ) {}
 
     private function createWhere(array $args): string
     {

@@ -9,10 +9,10 @@ use App\Exceptions\TooManyArgsException;
 class Dashboard extends RepositoryModel
 {
 
-
+    // TODO: add total current online users counter
     public function getTotalOrders(): bool|string|int
     {
-        return $this->db->table('orders')->count('total_orders')[0]['total_orders'];
+        return Order::count();
     }
 
     /**
@@ -20,7 +20,7 @@ class Dashboard extends RepositoryModel
      */
     public function getTotalCompletedOrders(): bool|string|int
     {
-        return $this->db->table('orders')->where('completed', '1')->count('total_completed')[0]['total_completed'];
+        return Order::count(['completed' => '1']);
     }
 
     /**
@@ -29,14 +29,16 @@ class Dashboard extends RepositoryModel
      */
     public function getTotalPending()
     {
-        return $this->db->table('orders')->where('completed', '=', '0')->count('total_pending')[0]['total_pending'];
+        return Order::count(['completed' => '0']);
     }
 
+    public function getTotalClients() {
+        return Client::count(['deleted' => '0']);
+    }
 
-    /**
-
-     * total registered clients
-     * total guest visits
-     */
+    public function getTotalUsers()
+    {
+        return User::count(['deleted' => '0']);
+    }
 
 }

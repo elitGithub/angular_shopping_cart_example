@@ -63,6 +63,22 @@ abstract class DbModel extends Model
         return Application::$app->db->pdo->prepare($sql);
     }
 
+    public static function count(array $where = []) {
+        $tableName = static::tableName();
+        $sql = "SELECT COUNT(*) AS $tableName FROM $tableName";
+        $attributes = array_keys($where);
+        $sqlWhere = implode(" AND ", array_map(fn($attr) => "$attr = :$attr", $attributes));
+        if (!empty($sqlWhere)) {
+            $sqlWhere = " WHERE " . $sqlWhere;
+        }
+        $stmt = static::prepare("$sql $sqlWhere");
+        foreach ($where as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
     public static function findAll($offset = 0): array
     {
         $tableName = static::tableName();
