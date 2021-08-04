@@ -31,18 +31,17 @@ class SiteController extends Controller
         // TODO: dashboard in front
         $dashboard = new Dashboard();
         $data = [
-            'total_orders'    => $dashboard->totalOrders(),
-            'total_completed' => $dashboard->totalCompletedOrders(),
-            'total_pending'   => $dashboard->totalPendingOrders(),
-            'total_clients'   => $dashboard->clientsCount(),
-            'total_users'     => $dashboard->usersCount(),
+            ['total' => $dashboard->totalOrders(), 'label' => 'Total Orders'],
+            ['total' => $dashboard->totalCompletedOrders(), 'label' => 'Completed Orders'],
+            ['total' => $dashboard->totalPendingOrders(), 'label' => 'Pending Orders'],
+            ['total' => $dashboard->clientsCount(), 'label' => 'Total Registered Clients'],
+            ['total' => $dashboard->usersCount(), 'label' => 'System Users'],
         ];
-        var_dump($data);
-        die();
-        /**
-         * total registered users
-         * total guest visits
-         */
+        $response
+            ->setSuccess(true)
+            ->setMessage('')
+            ->setData($data)
+            ->sendResponse();
     }
 
     public function options()

@@ -8,7 +8,7 @@ import { AuthService } from "./auth.service";
 })
 export class ApiService {
   private appPath: any;
-  private token: string;
+  private readonly token: string;
 
   constructor(private http: HttpClient, private configService: ConfigService, private authService: AuthService) {
     this.token = this.authService.hasAuthToken();
@@ -31,7 +31,6 @@ export class ApiService {
   async getDashboard() {
     const headers: HttpHeaders = new HttpHeaders()
       .set('Authorization', `Bearer ${ this.token }`);
-    const response = await this.http.get(`${ this.appPath }`, { 'headers': headers }).toPromise();
-    console.log(response);
+    return await this.http.get(`${ this.appPath }`, { 'headers': headers }).toPromise();
   }
 }

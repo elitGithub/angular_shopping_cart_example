@@ -14,12 +14,22 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.fetchDashboard();
+    this.fetchDashboard().then(res => this.buildForm(res));
+
   }
 
-  async fetchDashboard() {
+  buildForm(response) {
+    if (response.hasOwnProperty('success') && response.hasOwnProperty('data')) {
+      if (response.success) {
+        this.cards = response.data;
+        this.isLoading = false;
+      }
+    }
+  }
+
+  fetchDashboard() {
     this.isLoading = true;
-    await this.apiService.getDashboard();
+    return this.apiService.getDashboard();
   }
 
 
