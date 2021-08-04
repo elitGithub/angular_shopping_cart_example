@@ -3,7 +3,6 @@
 
 namespace App;
 
-use JetBrains\PhpStorm\NoReturn;
 use Stringable;
 
 /**
@@ -50,23 +49,24 @@ class Response implements Stringable
     }
 
 
-    public function setStatusCode(int $code)
+    public function setStatusCode(int $code): void
     {
         http_response_code($code);
     }
 
-    public function redirect(string $location)
+    public function redirect(string $location): void
     {
         header("Location:$location");
     }
 
-    #[NoReturn] public function sendResponse()
+    public function sendResponse(): void
     {
         die((string)$this);
     }
 
     public function __toString(): string
     {
+        // @Improvement: could probably add more stuff here.
         return json_encode([
             'success' => $this->success,
             'message' => $this->message,

@@ -2,11 +2,8 @@
 
 namespace App;
 
-use App\Controllers\AuthController;
-use App\Controllers\SiteController;
 use App\Exceptions\NotFoundException;
 use JetBrains\PhpStorm\Pure;
-use mysql_xdevapi\Exception;
 
 /**
  * Class Router
@@ -28,7 +25,7 @@ class Router
      * @param  Request  $request
      * @param  Response  $response
      */
-    #[Pure] public function __construct(public Request $request, public Response $response)
+    public function __construct(public Request $request, public Response $response)
     {
         $this->app = Application::getApp();
     }

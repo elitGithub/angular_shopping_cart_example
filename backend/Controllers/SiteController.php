@@ -31,11 +31,11 @@ class SiteController extends Controller
         // TODO: dashboard in front
         $dashboard = new Dashboard();
         $data = [
-            'total_orders'    => $dashboard->getTotalOrders(),
-            'total_completed' => $dashboard->getTotalCompletedOrders(),
-            'total_pending'   => $dashboard->getTotalPending(),
-            'total_clients'   => $dashboard->getTotalClients(),
-            'total_users'     => $dashboard->getTotalUsers(),
+            'total_orders'    => $dashboard->totalOrders(),
+            'total_completed' => $dashboard->totalCompletedOrders(),
+            'total_pending'   => $dashboard->totalPendingOrders(),
+            'total_clients'   => $dashboard->clientsCount(),
+            'total_users'     => $dashboard->usersCount(),
         ];
         var_dump($data);
         die();

@@ -10,7 +10,7 @@ class Dashboard extends RepositoryModel
 {
 
     // TODO: add total current online users counter
-    public function getTotalOrders(): bool|string|int
+    public function totalOrders(): bool|string|int
     {
         return Order::count();
     }
@@ -18,7 +18,7 @@ class Dashboard extends RepositoryModel
     /**
      * @throws TooManyArgsException|TooFewArgumentsSupplied
      */
-    public function getTotalCompletedOrders(): bool|string|int
+    public function totalCompletedOrders(): bool|string|int
     {
         return Order::count(['completed' => '1']);
     }
@@ -27,16 +27,16 @@ class Dashboard extends RepositoryModel
      * @throws TooManyArgsException
      * @throws TooFewArgumentsSupplied
      */
-    public function getTotalPending()
+    public function totalPendingOrders()
     {
         return Order::count(['completed' => '0']);
     }
 
-    public function getTotalClients() {
+    public function clientsCount() {
         return Client::count(['deleted' => '0']);
     }
 
-    public function getTotalUsers()
+    public function usersCount()
     {
         return User::count(['deleted' => '0']);
     }
