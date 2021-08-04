@@ -3,7 +3,7 @@ import { User } from "../../interfaces/user";
 import { AuthService } from "../../services/auth.service";
 import { BehaviorSubject } from "rxjs";
 import { Router } from "@angular/router";
-import { checkResponse } from "../../utils/utils";
+import { checkResponse, createApiResponse } from "../../utils/utils";
 
 @Component({
   selector: 'app-navbar',
@@ -33,7 +33,7 @@ export class NavbarComponent implements OnInit {
       this.user = user;
     } else {
       this.authService.getUserData()
-        .then(res => this.authService.createApiResponse(res))
+        .then(res => createApiResponse(res))
         .then(res => {
           if (checkResponse(res)) {
             this.user = res.data['user'];

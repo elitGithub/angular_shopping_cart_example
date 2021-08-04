@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../services/api.service";
+import { ApiResponse } from "../../interfaces/api-response";
 
 @Component({
   selector: 'app-dashboard',
@@ -13,12 +14,12 @@ export class DashboardComponent implements OnInit {
   constructor(private apiService: ApiService) {
   }
 
-  ngOnInit() {
-    this.fetchDashboard().then(res => this.buildForm(res));
+  async ngOnInit() {
+    this.buildForm(await this.fetchDashboard());
 
   }
 
-  buildForm(response) {
+  buildForm(response: ApiResponse) {
     if (response.hasOwnProperty('success') && response.hasOwnProperty('data')) {
       if (response.success) {
         this.cards = response.data;

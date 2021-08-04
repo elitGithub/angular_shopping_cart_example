@@ -5,6 +5,7 @@ import { ApiResponse } from "../interfaces/api-response";
 import { ConfigService } from "./config.service";
 import { User } from "../interfaces/user";
 import { CookieService } from "ngx-cookie-service";
+import { createApiResponse } from "../utils/utils";
 // TODO:
 // stage 1 check if has token
 // stage 2 verify if token is valid
@@ -30,29 +31,8 @@ export class AuthService {
 
   }
 
-  createApiResponse(response: any): ApiResponse {
-    const apiResponse: ApiResponse = { success: false, message: '', data: [ {} ] };
-    if (!response.hasOwnProperty('success')) {
-      throw new Error('broken response');
-    }
-
-    apiResponse.success = response.success;
-
-
-    if (response.hasOwnProperty('data')) {
-      apiResponse.data = response.data;
-    }
-
-    if (response.hasOwnProperty('message')) {
-      apiResponse.message = response.message;
-    }
-
-    return apiResponse;
-
-  }
-
   isLoggedIn() {
-    return this.http.post(this.isLoggedInUrl, { token: this.token }).toPromise().then(res => this.createApiResponse(res));
+    return this.http.post(this.isLoggedInUrl, { token: this.token }).toPromise().then(res => createApiResponse(res));
   }
 
   setUser(data) {
@@ -60,13 +40,13 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
-    return this.http.post(this.loginUrl, { username, password }).toPromise().then(res => this.createApiResponse(res));
+    return this.http.post(this.loginUrl, { username, password }).toPromise().then(res => createApiResponse(res));
   }
 
   getUserData() {
     const headers: HttpHeaders = new HttpHeaders()
       .set('Authorization', `Bearer ${ this.token }`);
-    return this.http.get(`${ this.appPath }/getUserData`, { 'headers': headers }).toPromise().then(res => this.createApiResponse(res));
+    return this.http.get(`${ this.appPath }/getUserData`, { 'headers': headers }).toPromise().then(res => createApiResponse(res));
   }
 
   hasAuthToken() {
