@@ -57,7 +57,7 @@ class Database
     {
         $stmt = static::prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetch();
     }
 
     public static function prepare($sql): bool|PDOStatement

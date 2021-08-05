@@ -7,13 +7,27 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CardComponent implements OnInit {
 
-  @Input() card;
+  @Input() cards;
+  @Input() metaData;
+  single: any[];
+  view: [number, number] = [700, 400];
+
+  colorScheme = {
+    domain: []
+  };
+  cardColor: string;
+
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.card);
+    this.cardColor = this.metaData.primaryColor;
+    this.cardsData(this.cards);
   }
 
-
-
+  cardsData(cards) {
+    this.cards.forEach(card => {
+      this.colorScheme.domain.push(card.color);
+    });
+    this.single = cards;
+  }
 }

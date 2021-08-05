@@ -8,6 +8,7 @@ use App\Controller;
 use App\DB\DbModel;
 use App\Exceptions\TooFewArgumentsSupplied;
 use App\Exceptions\TooManyArgsException;
+use App\Helpers\Colors;
 use App\Helpers\JWTHelper;
 use App\Interfaces\HasModel;
 use App\Middlewares\AuthMiddleware;
@@ -31,11 +32,36 @@ class SiteController extends Controller
         // TODO: dashboard in front
         $dashboard = new Dashboard();
         $data = [
-            ['total' => $dashboard->totalOrders(), 'label' => 'Total Orders'],
-            ['total' => $dashboard->totalCompletedOrders(), 'label' => 'Completed Orders'],
-            ['total' => $dashboard->totalPendingOrders(), 'label' => 'Pending Orders'],
-            ['total' => $dashboard->clientsCount(), 'label' => 'Total Registered Clients'],
-            ['total' => $dashboard->usersCount(), 'label' => 'System Users'],
+            'cards'    => [
+                [
+                    'value' => $dashboard->totalOrders(),
+                    'name' => 'Total Orders',
+                    'color' => Colors::FRUIT_SALAD
+                ],
+                [
+                    'value' => $dashboard->totalCompletedOrders(),
+                    'name' => 'Completed Orders',
+                    'color' => Colors::CINNABAR,
+                ],
+                [
+                    'value' => $dashboard->totalPendingOrders(),
+                    'name' => 'Pending Orders',
+                    'color' => Colors::WAFER,
+                ],
+                [
+                    'value' => $dashboard->clientsCount(),
+                    'name' => 'Total Registered Clients',
+                    'color' => Colors::JORDY_BLUE,
+                ],
+                [
+                    'value' => $dashboard->usersCount(),
+                    'name' => 'System Users',
+                    'color' => Colors::ROUGE,
+                ],
+            ],
+            'metaData' => [
+                'primaryColor' => Colors::MIDNIGHT_EXPRESS,
+            ],
         ];
         $response
             ->setSuccess(true)

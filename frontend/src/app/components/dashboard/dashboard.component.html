@@ -1,4 +1,4 @@
 <app-dashboard-loading [isLoading]="isLoading"></app-dashboard-loading>
 <div class="container" *ngIf="!isLoading && cards">
-  <app-card *ngFor="let card of cards" [card]="card"></app-card>
+  <app-card [cards]="cards['cards']" [metaData]="cards['metaData']"></app-card>
 </div>

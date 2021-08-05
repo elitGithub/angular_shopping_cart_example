@@ -1,12 +1,6 @@
-<mat-card flex-gt-sm>
-  <mat-card-title>{{ card.label }}</mat-card-title>
-  <mat-card-subtitle>Subtitle</mat-card-subtitle>
-  <mat-divider></mat-divider>
-  <mat-card-content>
-    {{ card.total }}
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button color="accent" class="text-upper">Action</button>
-    <button mat-button class="text-upper">Cancel</button>
-  </mat-card-actions>
-</mat-card>
+<ngx-charts-number-card
+  [view]="view"
+  [scheme]="colorScheme"
+  [results]="single"
+  [cardColor]="cardColor">
+</ngx-charts-number-card>

@@ -16,6 +16,7 @@ import { MatInputModule } from "@angular/material/input";
 import { CardComponent } from './card/card.component';
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { DashboardLoadingComponent } from './dashboard-loading/dashboard-loading.component';
+import { NgxChartsModule } from "@swimlane/ngx-charts";
 
 const routes: Routes = [
   {
@@ -43,6 +44,7 @@ const routes: Routes = [
         MatFormFieldModule,
         MatMenuModule,
         MatTooltipModule,
+        NgxChartsModule,
     ]
 })
 export class DashboardModule { }
