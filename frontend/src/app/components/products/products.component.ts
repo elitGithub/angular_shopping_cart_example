@@ -1,57 +1,63 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../services/api.service";
-import { MatTable } from "@angular/material/table";
+import { ExternalDataSource } from "../../shared/ExternalDataSource";
+import { SelectionModel } from "@angular/cdk/collections";
+import { Product } from "../../interfaces/product";
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
 
 @Component({
   selector: 'app-products',
   templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css']
+  styleUrls: [ './products.component.css' ]
 })
 export class ProductsComponent implements OnInit {
 
-  constructor(private apiService: ApiService) { }
-
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = [...ELEMENT_DATA];
-
-  @ViewChild(MatTable) table: MatTable<PeriodicElement>;
-
-  addData() {
-    const randomElementIndex = Math.floor(Math.random() * ELEMENT_DATA.length);
-    this.dataSource.push(ELEMENT_DATA[randomElementIndex]);
-    this.table.renderRows();
+  constructor(private apiService: ApiService) {
   }
 
-  removeData() {
-    this.dataSource.pop();
-    this.table.renderRows();
-  }
+  public displayedColumns: string[] = [ 'select', 'id', 'name', 'category', 'description', 'price' ];
+  public initialSelection = [];
+  public allowMultiSelect = true;
+  public selection = new SelectionModel<Product>(this.allowMultiSelect, this.initialSelection);
+  public dataToDisplay = [];
+  public dataSource: ExternalDataSource;
 
   ngOnInit(): void {
     this.getList();
   }
 
+  addData() {
+    // const randomElementIndex = Math.floor(Math.random() * ELEMENT_DATA.length);
+    // this.dataToDisplay = [
+    //   ...this.dataToDisplay,
+    //   ELEMENT_DATA[randomElementIndex]
+    // ];
+    // this.dataSource.setData(this.dataToDisplay);
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.dataLength;
+    return numSelected == numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  removeData() {
+    this.dataToDisplay = this.dataToDisplay.slice(0, -1);
+    this.dataSource.setData(this.dataToDisplay);
+  }
+
   private getList() {
-    this.apiService.getProducts();
+    this.apiService.getProducts().then(res => {
+      this.dataToDisplay = res.data;
+      this.dataSource = new ExternalDataSource(this.dataToDisplay);
+    });
   }
 }

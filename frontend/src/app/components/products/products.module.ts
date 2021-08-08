@@ -4,6 +4,8 @@ import { RouterModule, Routes } from "@angular/router";
 import { ProductsComponent } from "./products.component";
 import { MatTableModule } from "@angular/material/table";
 import { MatButtonModule } from "@angular/material/button";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 const routes: Routes = [
   {
@@ -19,6 +21,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     MatTableModule,
     MatButtonModule,
+    MatPaginatorModule,
+    MatCheckboxModule,
   ]
 })
 export class ProductsModule { }
