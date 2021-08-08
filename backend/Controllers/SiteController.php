@@ -54,6 +54,11 @@ class SiteController extends Controller
                     'color' => Colors::JORDY_BLUE,
                 ],
                 [
+                    'value' => $dashboard->productsCount(),
+                    'name' => 'Total Products',
+                    'color' => Colors::BLIZZARD_BLUE,
+                ],
+                [
                     'value' => $dashboard->usersCount(),
                     'name' => 'System Users',
                     'color' => Colors::ROUGE,
@@ -63,11 +68,7 @@ class SiteController extends Controller
                 'primaryColor' => Colors::MIDNIGHT_EXPRESS,
             ],
         ];
-        $response
-            ->setSuccess(true)
-            ->setMessage('')
-            ->setData($data)
-            ->sendResponse();
+        $this->json(success: true, data: $data);
     }
 
     public function options()

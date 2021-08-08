@@ -41,4 +41,9 @@ class Dashboard extends RepositoryModel
         return User::count(['deleted' => '0']);
     }
 
+    public function productsCount()
+    {
+        return Product::count(['deleted' => '0']);
+    }
+
 }

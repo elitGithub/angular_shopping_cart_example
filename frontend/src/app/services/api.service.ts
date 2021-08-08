@@ -18,7 +18,8 @@ export class ApiService {
   }
 
   getProducts() {
-    return [];
+    const headers: HttpHeaders = new HttpHeaders().set('Authorization', `Bearer ${ this.token }`);
+    return this.http.get(`${ this.appPath }/products`, { 'headers': headers }).toPromise().then(res => createApiResponse(res));
   }
 
   getCategories() {

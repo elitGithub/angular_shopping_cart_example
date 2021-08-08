@@ -14,7 +14,7 @@ class CategoryController extends Controller implements HasModel
 {
     public function index()
     {
-        $this->json(true, '', Category::findAll());
+        $this->json(success: true, data: Category::findAll());
     }
 
     function getModel(): DbModel

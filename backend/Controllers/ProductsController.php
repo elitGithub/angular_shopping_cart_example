@@ -13,7 +13,7 @@ class ProductsController extends Controller implements HasModel
 
     public function index()
     {
-        $this->json(true, '', Product::findAll());
+        $this->json(success: true, data: Product::findAll());
     }
 
     public function getModel(): Product

@@ -93,7 +93,7 @@ class Migrator extends Database
     protected function addNameSpace(array|string &$className)
     {
         if (is_string($className)) {
-            $className = "\\App\.".Migration::$migrationsDir. ".\\$className";
+            $className = "\\App\\".Migration::$migrationsDir. "\\$className";
         }
     }
 
