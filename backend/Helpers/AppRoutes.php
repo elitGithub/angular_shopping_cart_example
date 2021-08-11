@@ -18,10 +18,11 @@ class AppRoutes
                 [SiteController::class, 'options'],
             ],
             'get'     => [
-                '/'           => [SiteController::class, 'home'],
-                'products'    => [ProductsController::class, 'index'],
-                'categories'  => [CategoryController::class, 'index'],
-                'getUserData' => [AuthController::class, 'getUserData'],
+                '/'             => [SiteController::class, 'home'],
+                'products'      => [ProductsController::class, 'index'],
+                'products-form' => [ProductsController::class, 'form'],
+                'categories'    => [CategoryController::class, 'index'],
+                'getUserData'   => [AuthController::class, 'getUserData'],
             ],
             'post'    => [
                 'login'      => [AuthController::class, 'login'],

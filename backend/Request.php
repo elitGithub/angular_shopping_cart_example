@@ -10,6 +10,7 @@ class Request
 {
 
     private URL $url;
+    public string|int|array|null|false $queryParams;
 
     public function __construct()
     {

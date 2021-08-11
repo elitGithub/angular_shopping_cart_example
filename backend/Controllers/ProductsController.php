@@ -7,6 +7,8 @@ use App\Controller;
 use App\Interfaces\HasModel;
 use App\Middlewares\AuthMiddleware;
 use App\Models\Product;
+use App\Request;
+use App\Response;
 
 class ProductsController extends Controller implements HasModel
 {
@@ -14,6 +16,15 @@ class ProductsController extends Controller implements HasModel
     public function index()
     {
         $this->json(success: true, data: Product::findAll());
+    }
+
+    public function form(Request $request, Response $response) {
+        if ($request->isGet()) {
+            $id = $request->getBody()['id'] ?? null;
+            if (is_null($id)) {
+                $this->json(success: true, data: $this->getModel()->createForm());
+            }
+        }
     }
 
     public function getModel(): Product

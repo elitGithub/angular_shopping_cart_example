@@ -121,6 +121,7 @@ class Application
         $userData = [
             'user'     => $userId . '#' . $user->username,
             'userid'   => $userId,
+            'role'     => $user->getRoleId(),
             'username' => $user->username,
             'token'    => $user->token,
         ];

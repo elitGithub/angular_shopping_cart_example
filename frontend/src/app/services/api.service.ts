@@ -34,4 +34,9 @@ export class ApiService {
     const headers: HttpHeaders = new HttpHeaders().set('Authorization', `Bearer ${ this.token }`);
     return this.http.get(`${ this.appPath }`, { 'headers': headers }).toPromise().then(res => createApiResponse(res));
   }
+
+  getProductsForm() {
+    const headers: HttpHeaders = new HttpHeaders().set('Authorization', `Bearer ${ this.token }`);
+    return this.http.get(`${ this.appPath }/products-form`, { 'headers': headers }).toPromise().then(res => createApiResponse(res));
+  }
 }

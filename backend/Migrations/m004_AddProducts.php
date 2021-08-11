@@ -41,7 +41,7 @@ class m004_AddProducts extends Migration
         ],
         [
             'name'        => 'Tomatoes',
-            'description' => 'Very Yellow',
+            'description' => 'Very Red',
             'price'       => 8.99,
             'category_id' => 2,
             'in_stock'    => 1,

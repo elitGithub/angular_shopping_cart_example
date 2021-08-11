@@ -134,6 +134,10 @@ class User extends UserModel
         return Role::findByUser($this->{static::primaryKey()})->name;
     }
 
+    public function getRoleId() {
+        return Role::findByUser($this->{static::primaryKey()})->id;
+    }
+
     public function findByUserName()
     {
         if (empty($this->username)) {

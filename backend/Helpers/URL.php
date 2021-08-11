@@ -4,6 +4,8 @@
 namespace App\Helpers;
 
 
+use App\Application;
+
 class URL
 {
     private array $routeMap = [
@@ -17,11 +19,11 @@ class URL
         if ($url === '/') {
             return $url;
         }
-        $segments = explode('/', $url);
-        $segments = array_values(array_filter($segments));
-        $requestedRoute = end($segments);
-        $hasQueryParams = strpos($requestedRoute, '?');
+        $hasQueryParams = $this->readQueryParams($url);
         if (!$hasQueryParams) {
+            $segments = explode('/', $url);
+            $segments = array_values(array_filter($segments));
+            $requestedRoute = end($segments);
             if (in_array($requestedRoute, $this->routeMap)) {
                 return $this->routeMap[$this->removeFileExtensions($requestedRoute)];
             }
@@ -29,7 +31,7 @@ class URL
         }
 
         // TODO: query params handling
-        return $requestedRoute;
+        return '';
     }
 
     private function removeFileExtensions(string $path): bool|string
@@ -39,5 +41,22 @@ class URL
             return reset($elements);
         }
         return $path;
+    }
+
+    private function readQueryParams(string $url): bool
+    {
+        $parsed = parse_url($url);
+        if (isset($parsed['query'])) {
+            return true;
+        }
+        if (isset($parsed['path'])) {
+            $path = explode('/', $parsed['path']);
+            if (ctype_digit(end($path))) {
+                $_GET['id'] = end($path);
+            }
+            return true;
+        }
+
+        return false;
     }
 }

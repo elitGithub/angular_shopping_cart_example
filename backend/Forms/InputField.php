@@ -3,7 +3,10 @@
 
 namespace App\Forms;
 
+use App\Application;
+use App\Helpers\PermissionsManager;
 use App\Model;
+use App\Models\User;
 
 class InputField extends BaseField
 {
@@ -19,12 +22,20 @@ class InputField extends BaseField
 		parent::__construct($model, $attribute);
 	}
 
-	/**
-	 * @param  string  $type
-	 */
-	public function setType(string $type): void
+	public function label($fieldName) {
+	    $stripUnder = str_replace('_', ' ', $fieldName);
+	    return ucfirst($stripUnder);
+    }
+
+    /**
+     * @param  string  $type
+     *
+     * @return InputField
+     */
+	public function setType(string $type): InputField
 	{
 		$this->type = $type;
+		return $this;
 	}
 
 	/**
@@ -47,4 +58,9 @@ class InputField extends BaseField
 			$this->model->{$this->attribute},
 			$this->model->hasError($this->attribute) ? ' is-invalid' : '');
 	}
+
+    public function permission(string $field)
+    {
+        return PermissionsManager::fieldPermissions($field);
+    }
 }

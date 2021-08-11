@@ -27,6 +27,7 @@ export class ProductsComponent implements OnInit {
   }
 
   addData() {
+    this.apiService.getProductsForm();
     // const randomElementIndex = Math.floor(Math.random() * ELEMENT_DATA.length);
     // this.dataToDisplay = [
     //   ...this.dataToDisplay,
