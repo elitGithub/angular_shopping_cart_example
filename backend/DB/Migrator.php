@@ -51,7 +51,7 @@ class Migrator extends Database
     public function reverseMigrations()
     {
         $result = $this->preparedQuery('SELECT migration FROM migrations WHERE batch IN (SELECT MAX(batch) AS batch FROM migrations);');
-        $migrations = $result->fetchAll(PDO::FETCH_COLUMN);
+        $migrations = $this->fetchAllColumns($result);
 
         foreach ($migrations as $migration) {
             require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . Migration::$migrationsDir . DIRECTORY_SEPARATOR . $migration;
@@ -85,7 +85,7 @@ class Migrator extends Database
     protected function getAppliedMigrations(): array
     {
         $result = $this->preparedQuery("SELECT migration FROM migrations;");
-        return $result->fetchAll(PDO::FETCH_COLUMN);
+        return $this->fetchAllColumns($result);
     }
 
     protected function addNameSpace(array|string &$className)
@@ -105,8 +105,7 @@ class Migrator extends Database
     protected function deleteMigrations(array $migrations)
     {
         $toDelete = join(',', array_map(fn($m) => "'$m'", $migrations));
-        $stmt = $this->pdo->prepare("DELETE FROM migrations WHERE migration IN ($toDelete)");
-        $stmt->execute();
+        $this->preparedQuery("DELETE FROM migrations WHERE migration IN ($toDelete)");
     }
 
     protected function consoleOutput(string $message)
@@ -116,9 +115,8 @@ class Migrator extends Database
 
     private function currentBatch()
     {
-        $stmt = $this->pdo->prepare('SELECT MAX(batch) as batch FROM migrations');
-        $stmt->execute();
-        $max = $stmt->fetch(PDO::FETCH_ASSOC)['batch'];
+        $result = $this->preparedQuery('SELECT MAX(batch) as batch FROM migrations');
+        $max = $this->fetchColumn($result);
         $this->batch = ++$max;
     }
 

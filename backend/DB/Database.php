@@ -89,6 +89,26 @@ class Database
         }
     }
 
+    /**
+     * @param  PDOStatement  $result
+     *
+     * @return mixed
+     */
+    public function fetchColumn(PDOStatement $result): mixed
+    {
+        return $result->fetch(PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * @param  PDOStatement  $result
+     *
+     * @return bool|array
+     */
+    public function fetchAllColumns(PDOStatement $result): bool|array
+    {
+        return $result->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     protected function paramType($value): int
     {
         return match (true) {
