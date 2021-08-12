@@ -10,6 +10,7 @@ use PDO;
 class Migrator extends Database
 {
     private array $skipMigrations = ['.', '..'];
+
     public function applyMigrations()
     {
         $this->createMigrationsTable();
@@ -38,7 +39,6 @@ class Migrator extends Database
                 $this->consoleOutput($e->getMessage());
                 continue;
             }
-
         }
 
         if (!empty($newMigrations)) {
@@ -91,7 +91,7 @@ class Migrator extends Database
     protected function addNameSpace(array|string &$className)
     {
         if (is_string($className)) {
-            $className = "\\App\\".Migration::$migrationsDir. "\\$className";
+            $className = "\\App\\" . Migration::$migrationsDir . "\\$className";
         }
     }
 

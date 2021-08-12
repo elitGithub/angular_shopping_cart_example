@@ -11,7 +11,7 @@ class m008_AddIndexesToDB extends Migration
             'CREATE UNIQUE INDEX idx_username ON users (username);',
             'CREATE UNIQUE INDEX idx_email ON users (email);',
             'CREATE INDEX idx_role ON users (role_id);',
-            'ALTER TABLE users ADD FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE;'
+            'ALTER TABLE users ADD FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE;',
         ],
         'products'   => [
             'CREATE UNIQUE INDEX item_in_category ON products (name, category_id);',

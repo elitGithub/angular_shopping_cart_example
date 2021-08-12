@@ -32,7 +32,8 @@ class Dashboard extends RepositoryModel
         return Order::count(['completed' => '0']);
     }
 
-    public function clientsCount() {
+    public function clientsCount()
+    {
         return Client::count(['deleted' => '0']);
     }
 
