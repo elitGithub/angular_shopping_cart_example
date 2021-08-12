@@ -10,8 +10,7 @@ use App\Models\User;
 
 class m002_AddInitialUsers extends Migration
 {
-    // return ['first_name', 'last_name', 'email', 'password', 'status', 'deleted'];
-    public const USERS_TO_ADD = [
+    protected const USERS_TO_ADD = [
         [
             'username'         => 'admin',
             'first_name'       => 'Shop',
@@ -52,11 +51,6 @@ class m002_AddInitialUsers extends Migration
 
     public function down()
     {
-        foreach (static::USERS_TO_ADD as $data) {
-            $user = new User();
-            $user->loadData($data);
-            $user->findByUserName();
-            $user->delete($user->id);
-        }
+        // Installation removes the table
     }
 }

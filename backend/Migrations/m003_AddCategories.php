@@ -18,14 +18,11 @@ class m003_AddCategories extends Migration
     public function up()
     {
         $values = join(',', array_map(fn($cat) => "('$cat', 'A new category')", $this->categories));
-        $stmt = $this->db->prepare("INSERT INTO categories (name, description) VALUES $values");
-        $stmt->execute();
+        $this->db->preparedQuery("INSERT INTO categories (name, description) VALUES $values");
     }
 
     public function down()
     {
-        $toDelete = join(',', array_map(fn($m) => "'$m'", $this->categories));
-        $stmt = $this->db->prepare("DELETE FROM categories WHERE categories.name IN ($toDelete)");
-        $stmt->execute();
+        // Installation removes the table
     }
 }

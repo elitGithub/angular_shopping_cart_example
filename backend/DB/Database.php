@@ -8,6 +8,7 @@ use App\Application;
 use App\Exceptions\TooFewArgumentsSupplied;
 use App\Exceptions\TooManyArgsException;
 use PDO;
+use PDOException;
 use PDOStatement;
 
 /**
@@ -42,22 +43,60 @@ class Database
         'IS NULL',
     ];
 
+    public function preparedQuery(string $sql, array $params = []): bool|PDOStatement
+    {
+        if (empty($params)) {
+            // No need for preparation - no prepared statement.
+            return $this->query($sql);
+        }
+
+        // TODO: flatten array
+        $stmt = $this->pdo->prepare($sql);
+        if (isset($params[0])) {
+            // question marks
+            return $stmt->execute($params);
+        }
+
+        foreach ($params as $key => $value) {
+            $type = $this->paramType($value);
+            $stmt->bindValue(":$key", $value, $type);
+        }
+
+        return $stmt->execute();
+    }
+
+    private function query(string $sql): bool|PDOStatement
+    {
+        return $this->pdo->query($sql);
+    }
+
     public function __construct(array $config)
     {
         $this->checkAndCreateDB();
         $dsn = $config['dsn'] ?? '';
         $user = $config['user'] ?? '';
         $password = $config['password'] ?? '';
-        $this->pdo = new PDO($dsn, $user, $password);
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $options = [
+            PDO::ATTR_PERSISTENT         => true,
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ];
+        try {
+            $this->pdo = new PDO($dsn, $user, $password, $options);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            die();
+        }
     }
 
-    public function rawQuery($sql): bool|array
+    protected function paramType($value): int
     {
-        $stmt = static::prepare($sql);
-        $stmt->execute();
-        return $stmt->fetch();
+        return match (true) {
+            is_int($value) => PDO::PARAM_INT,
+            is_bool($value) => PDO::PARAM_BOOL,
+            is_null($value) => PDO::PARAM_NULL,
+            default => PDO::PARAM_STR,
+        };
     }
 
     public static function prepare($sql): bool|PDOStatement
@@ -151,7 +190,9 @@ class Database
         return $stmt->fetchAll();
     }
 
-    public function whereIn($column, ) {}
+    public function whereIn($column,)
+    {
+    }
 
     private function createWhere(array $args): string
     {
@@ -176,8 +217,17 @@ class Database
         $dsn = 'mysql:host=' . $_ENV['DB_HOST'] . ';port=' . $_ENV['DB_PORT'];
         $user = $_ENV['DB_USER'];
         $password = $_ENV['DB_PASSWORD'];
-        $pdo = new PDO($dsn, $user, $password);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $options = [
+            PDO::ATTR_PERSISTENT => true,
+            PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
+        ];
+        try {
+            $pdo = new PDO($dsn, $user, $password, $options);
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            die();
+        }
+
         $stmt = $pdo->prepare("SHOW DATABASES LIKE ?;");
         $stmt->bindParam(1, $_ENV['DB_NAME']);
         $stmt->execute();

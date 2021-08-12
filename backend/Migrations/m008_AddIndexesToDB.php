@@ -40,8 +40,7 @@ class m008_AddIndexesToDB extends Migration
     {
         foreach (static::INDEXES as $tableName => $queries) {
             foreach ($queries as $query) {
-                $stmt = $this->db->prepare($query);
-                $stmt->execute();
+                $this->db->preparedQuery($query);
             }
         }
     }

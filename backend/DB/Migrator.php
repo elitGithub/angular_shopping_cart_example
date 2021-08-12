@@ -50,9 +50,8 @@ class Migrator extends Database
 
     public function reverseMigrations()
     {
-        $stmt = $this->pdo->prepare('SELECT migration FROM migrations WHERE batch IN (SELECT MAX(batch) AS batch FROM migrations);');
-        $stmt->execute();
-        $migrations = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $result = $this->preparedQuery('SELECT migration FROM migrations WHERE batch IN (SELECT MAX(batch) AS batch FROM migrations);');
+        $migrations = $result->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($migrations as $migration) {
             require_once Application::$ROOT_DIR . DIRECTORY_SEPARATOR . Migration::$migrationsDir . DIRECTORY_SEPARATOR . $migration;
@@ -85,9 +84,8 @@ class Migrator extends Database
 
     protected function getAppliedMigrations(): array
     {
-        $statement = $this->pdo->prepare("SELECT migration FROM migrations;");
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_COLUMN);
+        $result = $this->preparedQuery("SELECT migration FROM migrations;");
+        return $result->fetchAll(PDO::FETCH_COLUMN);
     }
 
     protected function addNameSpace(array|string &$className)

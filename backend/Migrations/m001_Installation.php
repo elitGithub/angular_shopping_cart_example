@@ -63,19 +63,18 @@ class m001_Installation extends Migration {
 	public function up()
 	{
 		foreach (static::STATEMENTS as $sql) {
-			$stmt = $this->db->prepare($sql);
-			$stmt->execute();
+			$this->db->preparedQuery($sql);
 		}
 	}
 
 	public function down()
 	{
 		$tables = array_keys(static::STATEMENTS);
+		$this->db->preparedQuery("SET FOREIGN_KEY_CHECKS = 0;");
 		foreach ($tables as $table) {
-			$sql = 'DROP TABLE IF EXISTS ?';
-			$stmt = $this->db->prepare($sql);
-			$stmt->bindParam(1, $table);
-			$stmt->execute();
+			$sql = "DROP TABLE IF EXISTS $table";
+			$this->db->preparedQuery($sql);
 		}
+        $this->db->preparedQuery("SET FOREIGN_KEY_CHECKS = 1;");
 	}
 }

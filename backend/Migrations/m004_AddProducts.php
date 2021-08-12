@@ -59,10 +59,6 @@ class m004_AddProducts extends Migration
 
     public function down()
     {
-        $names = array_column(static::EXAMPLE_PRODUCTS, 'name');
-        $values = join(',', $names);
-        $sql = "DELETE FROM products WHERE name IN ($values)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        // Installation removes the table
     }
 }

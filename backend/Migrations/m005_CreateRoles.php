@@ -38,6 +38,6 @@ class m005_CreateRoles extends Migration
 
     public function down()
     {
-        // TODO: Implement down() method.
+        // Installation removes the table
     }
 }

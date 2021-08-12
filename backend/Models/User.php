@@ -79,10 +79,9 @@ class User extends UserModel
 
     public function delete($id)
     {
-        $userData = static::findOne([static::primaryKey() => $id]);
-        $userData->status = static::STATUS_INACTIVE;
-        $userData->deleted = static::DELETED;
-        $this->loadData($userData);
+        // $userData = static::findOne([static::primaryKey() => $id]);
+        $this->status = static::STATUS_INACTIVE;
+        $this->deleted = static::DELETED;
         $this->save();
     }
 
