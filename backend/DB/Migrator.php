@@ -116,7 +116,7 @@ class Migrator extends Database
     private function currentBatch()
     {
         $result = $this->preparedQuery('SELECT MAX(batch) as batch FROM migrations');
-        $max = $this->fetchColumn($result);
+        $max = $this->fetchSingleColumn($result);
         $this->batch = ++$max;
     }
 

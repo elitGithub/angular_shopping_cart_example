@@ -94,7 +94,7 @@ class Database
      *
      * @return mixed
      */
-    public function fetchColumn(PDOStatement $result): mixed
+    public function fetchSingleColumn(PDOStatement $result): mixed
     {
         return $result->fetch(PDO::FETCH_COLUMN);
     }
