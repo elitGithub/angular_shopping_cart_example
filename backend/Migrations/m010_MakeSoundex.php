@@ -17,7 +17,7 @@ class m010_MakeSoundex extends Migration
         foreach ($this->tables as $table => $column) {
             $result = $this->db->preparedQuery("SELECT $column FROM $table");
             foreach ($this->db->fetchAllColumns($result) as $string) {
-                $soundsLike = soundex($string);
+                $soundsLike = metaphone($string);
                 $this->db->preparedQuery("UPDATE $table SET sounds_like = ? WHERE $column = BINARY ?", [$soundsLike, $string]);
             }
         }

@@ -10,7 +10,6 @@ class Request
 {
 
     private URL $url;
-    public string|int|array|null|false $queryParams;
 
     public function __construct()
     {
@@ -19,8 +18,7 @@ class Request
 
     public function getPath()
     {
-        $path = $_SERVER['REQUEST_URI'] ?? '/';
-        return $this->url->segment($path);
+        return $this->url->segment($this->url->justRoute($this->url->requestedUrl()));
     }
 
     public function method(): string

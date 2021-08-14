@@ -3,9 +3,6 @@
 
 namespace App\Helpers;
 
-
-use App\Application;
-
 class URL
 {
     private array $routeMap = [
@@ -19,9 +16,14 @@ class URL
         if ($url === '/') {
             return $url;
         }
-        $hasQueryParams = $this->readQueryParams($url);
+
+        $url = ltrim($url, '/');
+
+        // Now we have the requested path
+        $segments = explode('/', $url);
+
+        $hasQueryParams = $this->readQueryParams($url, $segments);
         if (!$hasQueryParams) {
-            $segments = explode('/', $url);
             $segments = array_values(array_filter($segments));
             $requestedRoute = end($segments);
             if (in_array($requestedRoute, $this->routeMap)) {
@@ -30,8 +32,19 @@ class URL
             return $this->removeFileExtensions($requestedRoute);
         }
 
-        // TODO: query params handling
-        return '';
+        return join('/', $segments);
+    }
+
+    public function justRoute($url): array|string
+    {
+        // Remove the url of the website, so we're left with just the requested path.
+        $http = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://";
+        return str_replace($http . $_ENV['APP_URL'], '', $url);
+    }
+
+    public function requestedUrl(): string
+    {
+        return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     }
 
     private function removeFileExtensions(string $path): bool|string
@@ -43,18 +56,20 @@ class URL
         return $path;
     }
 
-    private function readQueryParams(string $url): bool
+    private function readQueryParams(string $url, array &$segments): bool
     {
         $parsed = parse_url($url);
         if (isset($parsed['query'])) {
             return true;
         }
         if (isset($parsed['path'])) {
-            $path = explode('/', $parsed['path']);
-            if (ctype_digit(end($path))) {
-                $_GET['id'] = end($path);
+            $end = end($segments);
+            if (ctype_digit($end)) {
+                $_GET['id'] = $end;
+                // Routes with IDs should be structured as /controller/id.
+                unset($segments[array_key_last($segments)]);
+                return true;
             }
-            return true;
         }
 
         return false;

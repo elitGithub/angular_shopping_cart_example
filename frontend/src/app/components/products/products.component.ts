@@ -3,6 +3,7 @@ import { ApiService } from "../../services/api.service";
 import { ExternalDataSource } from "../../shared/ExternalDataSource";
 import { SelectionModel } from "@angular/cdk/collections";
 import { Product } from "../../interfaces/product";
+import { checkResponse } from "../../utils/utils";
 
 
 @Component({
@@ -27,7 +28,13 @@ export class ProductsComponent implements OnInit {
   }
 
   addData() {
-    this.apiService.getProductsForm();
+    this.apiService.getProductsForm()
+      .then(res => {
+        if (checkResponse(res)) {
+          this.buildForm(res.data);
+        }
+      })
+      .catch(err => console.warn(err));
     // const randomElementIndex = Math.floor(Math.random() * ELEMENT_DATA.length);
     // this.dataToDisplay = [
     //   ...this.dataToDisplay,
@@ -60,5 +67,9 @@ export class ProductsComponent implements OnInit {
       this.dataToDisplay = res.data;
       this.dataSource = new ExternalDataSource(this.dataToDisplay);
     });
+  }
+
+  private buildForm(data: [ {} ]) {
+    console.log(data);
   }
 }

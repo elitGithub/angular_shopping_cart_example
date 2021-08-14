@@ -4,6 +4,7 @@
 namespace App\Models;
 
 
+use App\Application;
 use App\DB\DbModel;
 
 class Role extends DbModel
@@ -32,11 +33,9 @@ class Role extends DbModel
 
     public static function findByUser($userid)
     {
-        $sql = "SELECT name FROM " . static::tableName() . " WHERE " . static::primaryKey() . " = (SELECT role_id FROM " . User::tableName() . " WHERE " . User::primaryKey() . " = ?)";
-        $stmt = static::prepare($sql);
-        $stmt->bindParam(1, $userid);
-        $stmt->execute();
-        return $stmt->fetchObject(static::class);
+        $sql = "SELECT * FROM " . static::tableName() . " WHERE " . static::primaryKey() . " = (SELECT role_id FROM " . User::tableName() . " WHERE " . User::primaryKey() . " = ?)";
+        $res = Application::$app->db->preparedQuery($sql, $userid);
+        return $res->fetchObject(static::class);
     }
 
     public function rules(): array

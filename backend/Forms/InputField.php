@@ -22,7 +22,8 @@ class InputField extends BaseField
 		parent::__construct($model, $attribute);
 	}
 
-	public function label($fieldName) {
+	public function label($fieldName): string
+    {
 	    $stripUnder = str_replace('_', ' ', $fieldName);
 	    return ucfirst($stripUnder);
     }
