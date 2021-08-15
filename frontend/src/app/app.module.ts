@@ -23,6 +23,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { UsersComponent } from './components/users/users.component';
+import { CreateEditFormComponent } from './components/forms/create-edit-form/create-edit-form.component';
 
 @NgModule({
     declarations: [
@@ -32,7 +33,8 @@ import { UsersComponent } from './components/users/users.component';
         LoginComponent,
         SpinnerComponent,
         CategoriesComponent,
-        UsersComponent
+        UsersComponent,
+        CreateEditFormComponent
     ],
     imports: [
         BrowserModule,
