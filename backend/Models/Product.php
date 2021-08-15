@@ -5,8 +5,6 @@ namespace App\Models;
 
 
 use App\DB\DbModel;
-use App\Forms\Form;
-use App\Forms\InputField;
 
 class Product extends DbModel
 {
@@ -52,20 +50,4 @@ class Product extends DbModel
         return ['name', 'description', 'price', 'category_id', 'in_stock'];
     }
 
-    public function createForm(): array
-    {
-        $formFields = [];
-        $form = new Form();
-        foreach ($this->fillable() as $field) {
-            /**
-             * @var InputField
-             */
-            $inputField = $form->field($this, join(',', $this->fillable()));
-            $formFields[] = [
-                'label'       => $inputField->label($field),
-                'permissions' => $inputField->permission($field),
-            ];
-        }
-        return $formFields;
-    }
 }

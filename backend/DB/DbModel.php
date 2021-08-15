@@ -5,6 +5,8 @@ namespace App\DB;
 
 
 use App\Application;
+use App\Forms\Form;
+use App\Forms\InputField;
 use App\Model;
 use Exception;
 use PDO;
@@ -46,6 +48,33 @@ abstract class DbModel extends Model
         }
     }
 
+    public function createForm(): array
+    {
+        $formFields = [];
+        $form = new Form();
+        foreach ($this->fillable() as $field) {
+            /**
+             * @var InputField
+             */
+            $inputField = $form->field($this, join(',', $this->fillable()));
+            $type = $inputField->uiType($field, get_class($this));
+            $formFields[] = [
+                'label'       => $inputField->label($field),
+                'permissions' => $inputField->permission($field),
+                'type'        => $type,
+                'options'     => $type === 'select' ? $inputField->getFieldOptions($field) : [],
+            ];
+        }
+        return $formFields;
+    }
+
+    public static function list(): bool|array
+    {
+        $sql = "SELECT id, name FROM " . static::tableName() . " WHERE deleted = 0";
+        $res = Application::$app->db->preparedQuery($sql);
+        return $res->fetchAll();
+    }
+
     protected function logErrors($message, $trace)
     {
         file_put_contents(Application::$ROOT_DIR . '/runtime/' . date('Y-m-d') . '_errors_log.txt',
@@ -63,7 +92,8 @@ abstract class DbModel extends Model
         return Application::$app->db->pdo->prepare($sql);
     }
 
-    public static function count(array $where = []) {
+    public static function count(array $where = [])
+    {
         $tableName = static::tableName();
         $sql = "SELECT COUNT(*) AS $tableName FROM $tableName";
         $attributes = array_keys($where);

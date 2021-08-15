@@ -3,14 +3,14 @@
 
 namespace App\Forms;
 
-use App\Application;
 use App\Helpers\PermissionsManager;
 use App\Model;
-use App\Models\User;
+use App\Models\Category;
 
 class InputField extends BaseField
 {
 	public const TYPE_TEXT = 'text';
+	public const TYPE_SINGLE_SELECT = 'select';
 	public const TYPE_PASSWORD = 'password';
 	public const TYPE_NUMBER = 'number';
 	protected string $type;
@@ -60,8 +60,32 @@ class InputField extends BaseField
 			$this->model->hasError($this->attribute) ? ' is-invalid' : '');
 	}
 
-    public function permission(string $field)
+    public function permission(string $field): array
     {
         return PermissionsManager::fieldPermissions($field);
+    }
+
+    public function uiType(string $field, string $model): string
+    {
+        if ($model === 'App\Models\Product') {
+            if ($field === 'price') {
+                return static::TYPE_NUMBER;
+            }
+
+            if ($field === 'category_id') {
+                return static::TYPE_SINGLE_SELECT;
+            }
+        }
+
+        return static::TYPE_TEXT;
+    }
+
+    public function getFieldOptions(mixed $field): bool|array
+    {
+        if ($field === 'category_id') {
+            return Category::list();
+        }
+
+        return [];
     }
 }

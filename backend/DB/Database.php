@@ -43,33 +43,6 @@ class Database
         'IS NULL',
     ];
 
-    public function preparedQuery(string $sql, array $params = []): bool|PDOStatement
-    {
-        if (empty($params)) {
-            // No need for preparation - no prepared statement.
-            return $this->query($sql);
-        }
-
-        // TODO: flatten array
-        $stmt = $this->pdo->prepare($sql);
-        if (isset($params[0])) {
-            // question marks
-            return $stmt->execute($params);
-        }
-
-        foreach ($params as $key => $value) {
-            $type = $this->paramType($value);
-            $stmt->bindValue(":$key", $value, $type);
-        }
-
-        return $stmt->execute();
-    }
-
-    private function query(string $sql): bool|PDOStatement
-    {
-        return $this->pdo->query($sql);
-    }
-
     public function __construct(array $config)
     {
         $this->checkAndCreateDB();
@@ -87,6 +60,40 @@ class Database
             echo $e->getMessage();
             die();
         }
+    }
+
+    public function preparedQuery(string $sql, array $params = [], $dieOnError = false): bool|PDOStatement
+    {
+        if (empty($params)) {
+            // No need for preparation - no prepared statement.
+            return $this->query($sql);
+        }
+
+        if ($dieOnError) {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        }
+        // TODO: flatten array
+        $stmt = $this->pdo->prepare($sql);
+        if (isset($params[0])) {
+            // question marks
+            return $stmt->execute($params);
+        }
+
+        foreach ($params as $key => $value) {
+            $type = $this->paramType($value);
+            $stmt->bindValue(":$key", $value, $type);
+        }
+
+        if ($stmt->execute()) {
+            return $stmt;
+        }
+
+        return false;
+    }
+
+    private function query(string $sql): bool|PDOStatement
+    {
+        return $this->pdo->query($sql);
     }
 
     /**

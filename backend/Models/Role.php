@@ -33,8 +33,8 @@ class Role extends DbModel
 
     public static function findByUser($userid)
     {
-        $sql = "SELECT * FROM " . static::tableName() . " WHERE " . static::primaryKey() . " = (SELECT role_id FROM " . User::tableName() . " WHERE " . User::primaryKey() . " = ?)";
-        $res = Application::$app->db->preparedQuery($sql, $userid);
+        $sql = "SELECT * FROM " . static::tableName() . " WHERE " . static::primaryKey() . " = (SELECT role_id FROM " . User::tableName() . " WHERE " . User::primaryKey() . " =:id)";
+        $res = Application::$app->db->preparedQuery($sql, ['id' => $userid]);
         return $res->fetchObject(static::class);
     }
 

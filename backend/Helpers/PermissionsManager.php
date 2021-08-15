@@ -18,6 +18,11 @@ class PermissionsManager
             ];
         }
 
+        return [
+            'edit' => false,
+            'view' => true,
+        ];
+
 
     }
 }

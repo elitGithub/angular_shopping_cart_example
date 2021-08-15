@@ -5,6 +5,7 @@ namespace App;
 
 
 use App\Helpers\JWTHelper;
+use App\Models\User;
 
 class Session
 {
@@ -44,8 +45,15 @@ class Session
 
         if (JWTHelper::validate($authToken)) {
             $payload = JWTHelper::parseToken($authToken);
-            $this->set('token', $authToken);
-            $this->set('userid', $payload['user_id']);
+            $user = User::findOne(['id' => $payload['user_id']]);
+            $userData = [
+                'user'     => $payload['user_id'] . '#' . $user->username,
+                'userid'   => $payload['user_id'],
+                'role'     => $user->getRoleId(),
+                'username' => $user->username,
+                'token'    => $authToken,
+            ];
+            $this->setArray($userData);
             return true;
         }
         return false;
