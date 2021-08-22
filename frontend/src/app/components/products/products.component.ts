@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from "../../services/api.service";
 import { ExternalDataSource } from "../../shared/ExternalDataSource";
 import { SelectionModel } from "@angular/cdk/collections";
@@ -13,7 +13,7 @@ import { MatSidenav } from "@angular/material/sidenav";
   templateUrl: './products.component.html',
   styleUrls: [ './products.component.css' ]
 })
-export class ProductsComponent implements OnInit, AfterViewInit {
+export class ProductsComponent implements OnInit {
 
   @ViewChild('sidenav') public sidenav: MatSidenav;
 
@@ -26,17 +26,16 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   public selection = new SelectionModel<Product>(this.allowMultiSelect, this.initialSelection);
   public dataToDisplay = [];
   public dataSource: ExternalDataSource;
+  public showEdit: boolean = false;
 
   ngOnInit(): void {
+    this.sideNavService.setSidenav(this.sidenav);
     this.getList();
   }
 
   toggleSideNav() {
+    this.showEdit = !this.showEdit;
     this.sideNavService.toggle();
-  }
-
-  ngAfterViewInit(): void {
-    this.sideNavService.setSidenav(this.sidenav);
   }
 
   addData() {
@@ -82,7 +81,7 @@ export class ProductsComponent implements OnInit, AfterViewInit {
   }
 
   private buildForm(data: [ {} ]) {
-    this.toggleSideNav()
+    this.toggleSideNav();
     console.log(data);
   }
 }

@@ -6,6 +6,8 @@ import { MatTableModule } from "@angular/material/table";
 import { MatButtonModule } from "@angular/material/button";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { SidenavService } from "../../services/sidenav.service";
+import { SharedModule } from "../../shared/shared.module";
 
 const routes: Routes = [
   {
@@ -21,8 +23,10 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     MatTableModule,
     MatButtonModule,
+    SharedModule,
     MatPaginatorModule,
     MatCheckboxModule,
-  ]
+  ],
+  providers: [SidenavService]
 })
 export class ProductsModule { }

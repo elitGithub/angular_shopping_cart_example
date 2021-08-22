@@ -10,11 +10,11 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { HttpClientModule } from "@angular/common/http";
 import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SpinnerComponent } from './components/spinner/spinner.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { UsersComponent } from './components/users/users.component';
 import { CreateEditFormComponent } from './components/forms/create-edit-form/create-edit-form.component';
 import { MaterialModule } from "./material.module";
+import { SharedModule } from "./shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -22,10 +22,8 @@ import { MaterialModule } from "./material.module";
     NavbarComponent,
     NotFoundComponent,
     LoginComponent,
-    SpinnerComponent,
     CategoriesComponent,
-    UsersComponent,
-    CreateEditFormComponent
+    UsersComponent
   ],
   imports: [
     MaterialModule,
@@ -36,11 +34,9 @@ import { MaterialModule } from "./material.module";
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    SharedModule,
   ],
   providers: [],
-  exports: [
-    SpinnerComponent
-  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {

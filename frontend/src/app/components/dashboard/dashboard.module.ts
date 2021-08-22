@@ -7,6 +7,7 @@ import { CardComponent } from './card/card.component';
 import { DashboardLoadingComponent } from './dashboard-loading/dashboard-loading.component';
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { MaterialModule } from "../../material.module";
+import { SharedModule } from "../../shared/shared.module";
 
 const routes: Routes = [
   {
@@ -24,6 +25,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     HttpClientModule,
     NgxChartsModule,
+    SharedModule
   ]
 })
 export class DashboardModule {

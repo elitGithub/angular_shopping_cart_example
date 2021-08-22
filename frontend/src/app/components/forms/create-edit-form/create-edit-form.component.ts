@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
 
 @Component({
   selector: 'app-create-edit-form',
   templateUrl: './create-edit-form.component.html',
-  styleUrls: ['./create-edit-form.component.css']
+  styleUrls: ['./create-edit-form.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CreateEditFormComponent implements OnInit {
 
