@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from "../../services/api.service";
 import { ExternalDataSource } from "../../shared/ExternalDataSource";
 import { SelectionModel } from "@angular/cdk/collections";
 import { Product } from "../../interfaces/product";
 import { checkResponse } from "../../utils/utils";
+import { SidenavService } from "../../services/sidenav.service";
+import { MatSidenav } from "@angular/material/sidenav";
 
 
 @Component({
@@ -11,9 +13,11 @@ import { checkResponse } from "../../utils/utils";
   templateUrl: './products.component.html',
   styleUrls: [ './products.component.css' ]
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, AfterViewInit {
 
-  constructor(private apiService: ApiService) {
+  @ViewChild('sidenav') public sidenav: MatSidenav;
+
+  constructor(private apiService: ApiService, private sideNavService: SidenavService) {
   }
 
   public displayedColumns: string[] = [ 'select', 'id', 'name', 'category', 'description', 'price' ];
@@ -25,6 +29,14 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getList();
+  }
+
+  toggleSideNav() {
+    this.sideNavService.toggle();
+  }
+
+  ngAfterViewInit(): void {
+    this.sideNavService.setSidenav(this.sidenav);
   }
 
   addData() {
@@ -70,6 +82,7 @@ export class ProductsComponent implements OnInit {
   }
 
   private buildForm(data: [ {} ]) {
+    this.toggleSideNav()
     console.log(data);
   }
 }
