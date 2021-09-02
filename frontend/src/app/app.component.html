@@ -2,3 +2,6 @@
   <app-navbar *ngIf="authService.isAuthenticated.value"></app-navbar>
   <app-login *ngIf="!authService.isAuthenticated.value"></app-login>
 </div>
+<ng-container>
+  <app-create-edit-form #sidenav></app-create-edit-form>
+</ng-container>

@@ -14,9 +14,6 @@ import { MatSidenav } from "@angular/material/sidenav";
   styleUrls: [ './products.component.css' ]
 })
 export class ProductsComponent implements OnInit {
-
-  @ViewChild('sidenav') public sidenav: MatSidenav;
-
   constructor(private apiService: ApiService, private sideNavService: SidenavService) {
   }
 
@@ -29,12 +26,14 @@ export class ProductsComponent implements OnInit {
   public showEdit: boolean = false;
 
   ngOnInit(): void {
-    this.sideNavService.setSidenav(this.sidenav);
     this.getList();
   }
 
   toggleSideNav() {
     this.showEdit = !this.showEdit;
+    if (this.showEdit) {
+      this.sideNavService.open();
+    }
     this.sideNavService.toggle();
   }
 

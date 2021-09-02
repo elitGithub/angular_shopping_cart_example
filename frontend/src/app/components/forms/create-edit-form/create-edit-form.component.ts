@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
+import { MatSidenav } from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-create-edit-form',
@@ -12,7 +13,7 @@ export class CreateEditFormComponent implements OnInit {
 
   formGroup: FormGroup;
   titleAlert: string = 'This field is required';
-  post: any = '';
+  @ViewChild('rightSidenav') public sidenav: MatSidenav;
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -79,7 +80,7 @@ export class CreateEditFormComponent implements OnInit {
   }
 
   onSubmit(post) {
-    this.post = post;
+    console.log(post);
   }
 
 }
