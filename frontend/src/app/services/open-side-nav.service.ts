@@ -6,6 +6,6 @@ import { EventEmitter } from "events";
 })
 export class OpenSideNavService {
 
-  @Output() openSideNav = new EventEmitter();
+  @Output() openSideNav: EventEmitter = new EventEmitter();
   constructor() { }
 }

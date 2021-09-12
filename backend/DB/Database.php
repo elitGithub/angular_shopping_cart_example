@@ -42,6 +42,7 @@ class Database
         'IS NOT NULL',
         'IS NULL',
     ];
+    private bool $debug = false;
 
     public function __construct(array $config)
     {
@@ -69,26 +70,109 @@ class Database
             return $this->query($sql);
         }
 
-        if ($dieOnError) {
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        }
-        // TODO: flatten array
         $stmt = $this->pdo->prepare($sql);
         if (isset($params[0])) {
-            // question marks
-            return $stmt->execute($params);
-        }
-
-        foreach ($params as $key => $value) {
-            $type = $this->paramType($value);
-            $stmt->bindValue(":$key", $value, $type);
-        }
-
-        if ($stmt->execute()) {
+            // Question marks
+            $params = $this->flatten_array($params);
+            $res = $stmt->execute($params);
+            if (!$res && $dieOnError) {
+                if ($this->debug) {
+                    echo $this->toSql($sql, $params, true);
+                }
+                die('Query failed');
+            }
             return $stmt;
         }
 
-        return false;
+        // Named params
+        foreach ($params as $param => $value) {
+            $type = $this->paramType($value);
+            $stmt->bindValue(":$param", $value, $type);
+        }
+        $res = $stmt->execute();
+        if (!$res && $dieOnError) {
+            if ($this->debug) {
+                echo $this->toSql($sql, $params, true);
+            }
+            die('Query failed');
+        }
+        return $stmt;
+    }
+
+    /**
+     * @param       $query
+     * @param       $data
+     * @param  bool  $die
+     *
+     * @return array|string|null Replace placeholders with the provided values.
+     * Replace placeholders with the provided values.
+     */
+    public function toSql ($query, $data, bool $die = false): array|string|null
+    {
+        $keys = [];
+        $values = $data;
+        $named_params = true;
+        # build a regular expression for each parameter
+        foreach ($data as $key => $value) {
+            if (is_string($key)) {
+                $keys[] = '/:' . $key . '/';
+            } else {
+                $keys[] = '/[?]/';
+                $named_params = false;
+            }
+
+            if (is_string($value)) {
+                $values[$key] = "'" . $value . "'";
+            }
+
+            if (is_array($value)) {
+                $values[$key] = "'" . implode("','", $value) . "'";
+            }
+
+            if (is_null($value)) {
+                $values[$key] = 'NULL';
+            }
+        }
+
+        if ($named_params) {
+            $query = preg_replace($keys, $values, $query);
+        } else {
+            $query = $query . ' ';
+            $bits = explode(' ? ', $query);
+
+            $query = '';
+            for ($i = 0; $i < count($bits); $i++) {
+                $query .= $bits[$i];
+
+                if (isset($values[$i])) {
+                    $query .= ' ' . $values[$i] . ' ';
+                }
+            }
+        }
+
+        if ($die) {
+            die($query);
+        }
+
+        return $query;
+    }
+
+    public function flatten_array ($input, $output = null)
+    {
+        if (empty($input)) {
+            return null;
+        }
+        if (empty($output)) {
+            $output = [];
+        }
+        foreach ($input as $value) {
+            if (is_array($value)) {
+                $output = $this->flatten_array($value, $output);
+            } else {
+                array_push($output, $value);
+            }
+        }
+        return $output;
     }
 
     private function query(string $sql): bool|PDOStatement
@@ -217,7 +301,7 @@ class Database
         return $stmt->fetchAll();
     }
 
-    public function whereIn($column,)
+    public function whereIn($column)
     {
     }
 

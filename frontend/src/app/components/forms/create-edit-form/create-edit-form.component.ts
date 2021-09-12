@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
 import { MatSidenav } from "@angular/material/sidenav";
@@ -14,6 +14,7 @@ export class CreateEditFormComponent implements OnInit {
   formGroup: FormGroup;
   titleAlert: string = 'This field is required';
   @ViewChild('rightSidenav') public sidenav: MatSidenav;
+  @Input() fields;
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -72,6 +73,14 @@ export class CreateEditFormComponent implements OnInit {
     return this.formGroup.get('email').hasError('required') ? 'Field is required' :
       this.formGroup.get('email').hasError('pattern') ? 'Not a valid emailaddress' :
         this.formGroup.get('email').hasError('alreadyInUse') ? 'This emailaddress is already in use' : '';
+  }
+
+  open() {
+    console.log(this.fields);
+    this.sidenav.open();
+  }
+  close() {
+    this.sidenav.close();
   }
 
   getErrorPassword() {

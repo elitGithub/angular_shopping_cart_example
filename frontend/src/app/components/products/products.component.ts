@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../services/api.service";
 import { ExternalDataSource } from "../../shared/ExternalDataSource";
 import { SelectionModel } from "@angular/cdk/collections";
 import { Product } from "../../interfaces/product";
 import { checkResponse } from "../../utils/utils";
-import { SidenavService } from "../../services/sidenav.service";
-import { MatSidenav } from "@angular/material/sidenav";
+import { OpenSideNavService } from "../../services/open-side-nav.service";
 
 
 @Component({
@@ -14,7 +13,7 @@ import { MatSidenav } from "@angular/material/sidenav";
   styleUrls: [ './products.component.css' ]
 })
 export class ProductsComponent implements OnInit {
-  constructor(private apiService: ApiService, private sideNavService: SidenavService) {
+  constructor(private apiService: ApiService, private sideNavService: OpenSideNavService) {
   }
 
   public displayedColumns: string[] = [ 'select', 'id', 'name', 'category', 'description', 'price' ];
@@ -29,13 +28,6 @@ export class ProductsComponent implements OnInit {
     this.getList();
   }
 
-  toggleSideNav() {
-    this.showEdit = !this.showEdit;
-    if (this.showEdit) {
-      this.sideNavService.open();
-    }
-    this.sideNavService.toggle();
-  }
 
   addData() {
     this.apiService.getProductsForm()
@@ -80,7 +72,7 @@ export class ProductsComponent implements OnInit {
   }
 
   private buildForm(data: [ {} ]) {
-    this.toggleSideNav();
-    console.log(data);
+    this.showEdit = !this.showEdit;
+    this.sideNavService.openSideNav.emit(this.showEdit ? 'open' : 'close', data);
   }
 }
