@@ -14,23 +14,23 @@ class Form
         'createProduct' => 'ProductForm',
     ];
 
-    public static function hasForm($path)
+    public static function hasForm ($path)
     {
         return static::$forms[$path] ?? false;
     }
 
-    public static function begin(string $action, string $method): Form
+    public static function begin (string $action, string $method): Form
     {
         echo sprintf('<form action="%s" method="%s">', $action, $method);
         return new Form();
     }
 
-    public static function end()
+    public static function end ()
     {
         echo '</form>';
     }
 
-    public function field(Model $model, $attribute): InputField
+    public function field (Model $model, $attribute): InputField
     {
         return new InputField($model, $attribute);
     }
