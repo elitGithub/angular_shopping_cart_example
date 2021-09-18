@@ -2,6 +2,9 @@ import { Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from "rxjs";
 import { MatSidenav } from "@angular/material/sidenav";
+import { HttpHeaders } from "@angular/common/http";
+import { checkResponse, createApiResponse } from "../../../utils/utils";
+import { ApiService } from "../../../services/api.service";
 
 @Component({
   selector: 'app-create-edit-form',
@@ -14,26 +17,27 @@ export class CreateEditFormComponent implements OnInit {
   formGroup: FormGroup;
   titleAlert: string = 'This field is required';
   @ViewChild('rightSidenav') public sidenav: MatSidenav;
-  @Input() fields;
-  constructor(private formBuilder: FormBuilder) { }
+  public fields;
+  public title;
+  private emailregex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  constructor(private formBuilder: FormBuilder, private apiService: ApiService) {
+  }
 
   ngOnInit(): void {
-    this.createForm();
-    this.setChangeValidate()
   }
 
   createForm() {
-    let emailregex: RegExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    this.formGroup = this.formBuilder.group({
-      'email': [null, [Validators.required, Validators.pattern(emailregex)], this.checkInUseEmail],
-      'name': [null, Validators.required],
-      'password': [null, [Validators.required, this.checkPassword]],
-      'description': [null, [Validators.required, Validators.minLength(5), Validators.maxLength(10)]],
-      'validate': ''
+    let group = {}
+    this.fields.forEach(field => {
+      group[field.name] = new FormControl('');
     });
+    this.formGroup = new FormGroup(group);
+    this.setChangeValidate();
   }
 
   setChangeValidate() {
+    // TODO dynamic validators!
     this.formGroup.get('validate').valueChanges.subscribe(
       (validate) => {
         if (validate == '1') {
@@ -71,14 +75,24 @@ export class CreateEditFormComponent implements OnInit {
 
   getErrorEmail() {
     return this.formGroup.get('email').hasError('required') ? 'Field is required' :
-      this.formGroup.get('email').hasError('pattern') ? 'Not a valid emailaddress' :
-        this.formGroup.get('email').hasError('alreadyInUse') ? 'This emailaddress is already in use' : '';
+      this.formGroup.get('email').hasError('pattern') ? 'Not a valid email address' :
+        this.formGroup.get('email').hasError('alreadyInUse') ? 'This email address is already in use' : '';
   }
 
   open() {
-    console.log(this.fields);
+    this.apiService.getProductsForm()
+      .then(res => {
+        if (checkResponse(res)) {
+          this.fields = res.data['fields'];
+          this.title = res.data['title'];
+          this.createForm();
+          console.log(res.data)
+        }
+      })
+      .catch(err => console.warn(err));
     this.sidenav.open();
   }
+
   close() {
     this.sidenav.close();
   }

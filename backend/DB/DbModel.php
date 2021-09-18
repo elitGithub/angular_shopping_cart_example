@@ -17,23 +17,24 @@ abstract class DbModel extends Model
 {
     public static int $limitPerPage = 50;
 
-    abstract public static function tableName(): string;
+    abstract public static function tableName () : string;
 
-    abstract public function attributes(): array;
+    abstract public function attributes () : array;
 
-    abstract public function fillable(): array;
+    abstract public function fillable () : array;
 
-    abstract public static function primaryKey(): string;
+    abstract public static function primaryKey () : string;
 
 
-    public function save(): bool
+    public function save () : bool
     {
         try {
             $tableName = static::tableName();
             $attributes = $this->fillable();
             $params = array_map(fn($attr) => ":$attr", $attributes);
             $statement = static::prepare("INSERT INTO $tableName (" . implode(',',
-                    $attributes) . ") VALUES (" . implode(',', $params) . ");");
+                                                                              $attributes) . ") VALUES (" . implode(',',
+                                                                                                                    $params) . ");");
             foreach ($attributes as $attribute) {
                 $statement->bindValue(":$attribute", $this->{$attribute});
             }
@@ -48,7 +49,7 @@ abstract class DbModel extends Model
         }
     }
 
-    public function createForm(): array
+    public function createForm () : array
     {
         $formFields = [];
         $form = new Form();
@@ -60,39 +61,41 @@ abstract class DbModel extends Model
             $type = $inputField->uiType($field, get_class($this));
             $formFields[] = [
                 'label'       => $inputField->label($field),
+                'name'        => $field,
                 'permissions' => $inputField->permission($field),
                 'type'        => $type,
-                'options'     => $type === 'select' ? $inputField->getFieldOptions($field) : [],
+                'options'     => ($type === 'select') ? $inputField->getFieldOptions($field) : [],
+                'placeholder' => '',
             ];
         }
         return $formFields;
     }
 
-    public static function list(): bool|array
+    public static function list () : bool | array
     {
         $sql = "SELECT id, name FROM " . static::tableName() . " WHERE deleted = 0";
         $res = Application::$app->db->preparedQuery($sql);
         return $res->fetchAll();
     }
 
-    protected function logErrors($message, $trace)
+    protected function logErrors ($message, $trace)
     {
         file_put_contents(Application::$ROOT_DIR . '/runtime/' . date('Y-m-d') . '_errors_log.txt',
-            ['message' => $message, 'trace' => $trace],
-            FILE_APPEND);
+                          ['message' => $message, 'trace' => $trace],
+                          FILE_APPEND);
     }
 
-    public function exec(string $sql): bool|int
+    public function exec (string $sql) : bool | int
     {
         return Application::$app->db->pdo->exec($sql);
     }
 
-    public static function prepare($sql): bool|PDOStatement
+    public static function prepare ($sql) : bool | PDOStatement
     {
         return Application::$app->db->pdo->prepare($sql);
     }
 
-    public static function count(array $where = [])
+    public static function count (array $where = [])
     {
         $tableName = static::tableName();
         $sql = "SELECT COUNT(*) AS $tableName FROM $tableName";
@@ -109,7 +112,7 @@ abstract class DbModel extends Model
         return $stmt->fetchColumn();
     }
 
-    public static function findAll($offset = 0): array
+    public static function findAll ($offset = 0) : array
     {
         $tableName = static::tableName();
         $limit = static::$limitPerPage;
@@ -125,7 +128,7 @@ abstract class DbModel extends Model
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? [];
     }
 
-    public function modelAttributes(): array
+    public function modelAttributes () : array
     {
         $stmt = static::prepare("DESCRIBE {$this->tableName()}");
         $stmt->execute();
@@ -136,7 +139,7 @@ abstract class DbModel extends Model
         return $attributes;
     }
 
-    public static function findOne(array $where = [])
+    public static function findOne (array $where = [])
     {
         $tableName = static::tableName();
         $attributes = array_keys($where);

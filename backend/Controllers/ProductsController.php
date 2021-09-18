@@ -13,31 +13,36 @@ use App\Response;
 class ProductsController extends Controller implements HasModel
 {
 
-    public function index()
+    public function index ()
     {
         $this->json(success: true, data: Product::findAll());
     }
 
-    public function form(Request $request, Response $response) {
+    public function form (Request $request, Response $response)
+    {
         if ($request->isGet()) {
             $id = $request->getBody()['id'] ?? null;
             if (is_null($id)) {
-                $this->json(success: true, data: $this->getModel()->createForm());
+                $data = [
+                    'title'  => 'Create New Product',
+                    'fields' => $this->getModel()->createForm(),
+                ];
+                $this->json(success: true, data: $data);
             }
         }
     }
 
-    public function getModel(): Product
+    public function getModel () : Product
     {
         return new Product();
     }
 
-    public function allowedNotSecureActions(): array
+    public function allowedNotSecureActions () : array
     {
         return ['login'];
     }
 
-    public function usedMiddlewares(): array
+    public function usedMiddlewares () : array
     {
         return [
             AuthMiddleware::class,

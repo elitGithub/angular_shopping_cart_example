@@ -30,19 +30,8 @@ export class ProductsComponent implements OnInit {
 
 
   addData() {
-    this.apiService.getProductsForm()
-      .then(res => {
-        if (checkResponse(res)) {
-          this.buildForm(res.data);
-        }
-      })
-      .catch(err => console.warn(err));
-    // const randomElementIndex = Math.floor(Math.random() * ELEMENT_DATA.length);
-    // this.dataToDisplay = [
-    //   ...this.dataToDisplay,
-    //   ELEMENT_DATA[randomElementIndex]
-    // ];
-    // this.dataSource.setData(this.dataToDisplay);
+    this.showEdit = !this.showEdit;
+    this.sideNavService.openSideNav.emit(this.showEdit ? 'open' : 'close');
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -69,10 +58,5 @@ export class ProductsComponent implements OnInit {
       this.dataToDisplay = res.data;
       this.dataSource = new ExternalDataSource(this.dataToDisplay);
     });
-  }
-
-  private buildForm(data: [ {} ]) {
-    this.showEdit = !this.showEdit;
-    this.sideNavService.openSideNav.emit(this.showEdit ? 'open' : 'close', data);
   }
 }

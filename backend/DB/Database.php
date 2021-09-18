@@ -23,12 +23,12 @@ class Database
     public int $batch = 1;
 
     protected string $table;
-    protected string|array $columns;
+    protected string | array $columns;
     /**
      * @var mixed|string
      */
     protected mixed $alias;
-    protected array|string $where;
+    protected array | string $where;
     private array $sqlComparisonOperators = [
         '=',
         '<>',
@@ -44,7 +44,7 @@ class Database
     ];
     private bool $debug = false;
 
-    public function __construct(array $config)
+    public function __construct (array $config)
     {
         $this->checkAndCreateDB();
         $dsn = $config['dsn'] ?? '';
@@ -63,7 +63,7 @@ class Database
         }
     }
 
-    public function preparedQuery(string $sql, array $params = [], $dieOnError = false): bool|PDOStatement
+    public function preparedQuery (string $sql, array $params = [], $dieOnError = false) : bool | PDOStatement
     {
         if (empty($params)) {
             // No need for preparation - no prepared statement.
@@ -107,7 +107,7 @@ class Database
      * @return array|string|null Replace placeholders with the provided values.
      * Replace placeholders with the provided values.
      */
-    public function toSql ($query, $data, bool $die = false): array|string|null
+    public function toSql ($query, $data, bool $die = false) : array | string | null
     {
         $keys = [];
         $values = $data;
@@ -175,7 +175,7 @@ class Database
         return $output;
     }
 
-    private function query(string $sql): bool|PDOStatement
+    private function query (string $sql) : bool | PDOStatement
     {
         return $this->pdo->query($sql);
     }
@@ -185,7 +185,7 @@ class Database
      *
      * @return mixed
      */
-    public function fetchSingleColumn(PDOStatement $result): mixed
+    public function fetchSingleColumn (PDOStatement $result) : mixed
     {
         return $result->fetch(PDO::FETCH_COLUMN);
     }
@@ -195,12 +195,12 @@ class Database
      *
      * @return bool|array
      */
-    public function fetchAllColumns(PDOStatement $result): bool|array
+    public function fetchAllColumns (PDOStatement $result) : bool | array
     {
         return $result->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    protected function paramType($value): int
+    protected function paramType ($value) : int
     {
         return match (true) {
             is_int($value) => PDO::PARAM_INT,
@@ -210,12 +210,12 @@ class Database
         };
     }
 
-    public static function prepare($sql): bool|PDOStatement
+    public static function prepare ($sql) : bool | PDOStatement
     {
         return Application::$app->db->pdo->prepare($sql);
     }
 
-    public function table(string $table): static
+    public function table (string $table) : static
     {
         $this->table = $table;
         return $this;
@@ -225,7 +225,7 @@ class Database
      * @throws TooManyArgsException
      * @throws TooFewArgumentsSupplied
      */
-    public function where(): static
+    public function where () : static
     {
         $args = func_get_args();
 
@@ -251,7 +251,7 @@ class Database
     }
 
     // TODO: there has got to be a better way of doing this...
-    public function count($alias = ''): array|bool
+    public function count ($alias = '') : array | bool
     {
         $this->columns = 'COUNT(*)';
         if (!empty($alias)) {
@@ -269,7 +269,7 @@ class Database
     }
 
     //TODO: we'll need to make this into a smarter select.
-    protected function get(array|string $columns = ['*']): static
+    protected function get (array | string $columns = ['*']) : static
     {
         if (is_array($columns)) {
             $columns = join(', ', $columns);
@@ -281,7 +281,7 @@ class Database
         return $this;
     }
 
-    public function select(): bool|array
+    public function select () : bool | array
     {
         $columnList = $this->columns;
         if (is_array($this->columns)) {
@@ -301,11 +301,11 @@ class Database
         return $stmt->fetchAll();
     }
 
-    public function whereIn($column)
+    public function whereIn ($column)
     {
     }
 
-    private function createWhere(array $args): string
+    private function createWhere (array $args) : string
     {
         return match (strtoupper($args[1])) {
             '<>' => "$args[1] <> $args[2]",
@@ -323,7 +323,7 @@ class Database
         };
     }
 
-    private function checkAndCreateDB(): void
+    private function checkAndCreateDB () : void
     {
         $dsn = 'mysql:host=' . $_ENV['DB_HOST'] . ';port=' . $_ENV['DB_PORT'];
         $user = $_ENV['DB_USER'];
