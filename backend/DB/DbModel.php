@@ -75,7 +75,13 @@ abstract class DbModel extends Model
     {
         $sql = "SELECT id, name FROM " . static::tableName() . " WHERE deleted = 0";
         $res = Application::$app->db->preparedQuery($sql);
-        return $res->fetchAll();
+        foreach ($res->fetchAll() as $value) {
+            $list[] = [
+                'id' => $value['id'],
+                'name' => $value['name'],
+            ];
+        }
+        return $list ?? false;
     }
 
     protected function logErrors ($message, $trace)

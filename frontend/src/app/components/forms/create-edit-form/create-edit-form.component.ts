@@ -37,18 +37,19 @@ export class CreateEditFormComponent implements OnInit {
   }
 
   setChangeValidate() {
+    console.log('I will validate');
     // TODO dynamic validators!
-    this.formGroup.get('validate').valueChanges.subscribe(
-      (validate) => {
-        if (validate == '1') {
-          this.formGroup.get('name').setValidators([Validators.required, Validators.minLength(3)]);
-          this.titleAlert = "You need to specify at least 3 characters";
-        } else {
-          this.formGroup.get('name').setValidators(Validators.required);
-        }
-        this.formGroup.get('name').updateValueAndValidity();
-      }
-    )
+    // this.formGroup.get('validate').valueChanges.subscribe(
+    //   (validate) => {
+    //     if (validate == '1') {
+    //       this.formGroup.get('name').setValidators([Validators.required, Validators.minLength(3)]);
+    //       this.titleAlert = "You need to specify at least 3 characters";
+    //     } else {
+    //       this.formGroup.get('name').setValidators(Validators.required);
+    //     }
+    //     this.formGroup.get('name').updateValueAndValidity();
+    //   }
+    // )
   }
 
   get name() {

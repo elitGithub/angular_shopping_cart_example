@@ -9,7 +9,7 @@ import { createApiResponse } from "../utils/utils";
 })
 export class ApiService {
   private readonly appPath: any;
-  private readonly token: string;
+  private token: string;
 
   constructor(private http: HttpClient, private configService: ConfigService, private authService: AuthService) {
     this.token = this.authService.hasAuthToken();
@@ -31,11 +31,17 @@ export class ApiService {
   }
 
   getDashboard() {
+    if (!this.token) {
+      this.token = this.authService.hasAuthToken();
+    }
     const headers: HttpHeaders = new HttpHeaders().set('Authorization', `Bearer ${ this.token }`);
     return this.http.get(`${ this.appPath }`, { 'headers': headers }).toPromise().then(res => createApiResponse(res));
   }
 
   getProductsForm() {
+    if (!this.token) {
+      this.token = this.authService.hasAuthToken();
+    }
     const headers: HttpHeaders = new HttpHeaders().set('Authorization', `Bearer ${ this.token }`);
     return this.http.get(`${ this.appPath }/products-form`, { 'headers': headers }).toPromise().then(res => createApiResponse(res));
   }
